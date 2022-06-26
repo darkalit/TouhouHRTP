@@ -1,0 +1,91 @@
+#include "Text.h"
+
+//#define STB_TRUETYPE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#include "stb_truetype.h"
+#include "stb_image_write.h"
+#include "../Debug.h"
+
+Text::Text(Font* font, GLFWwindow* window)
+	:
+	font_(font), shader_(Shader(glsl::vText, glsl::fText))
+{
+	int winSizeX, winSizeY;
+	glfwGetFramebufferSize(window, &winSizeX, &winSizeY);
+	this->win_height_ = static_cast<float32>(winSizeY);
+	this->proj_	= glm::ortho(0.0f, 
+		static_cast<float32>(winSizeX), 
+		static_cast<float32>(winSizeY), 
+		0.0f, -1.0f, 1.0f);
+	shader_.use();
+	shader_.setMat4("projection", this->proj_);
+	shader_.setVec3("textColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	
+	glGenVertexArrays(1, &this->vao_);
+    glGenBuffers(1, &this->vbo_);
+    glBindVertexArray(this->vao_);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo_);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void Text::set_color(float32 r, float32 g, float32 b)
+{
+	shader_.use();
+	shader_.setVec3("textColor", glm::vec3(r, g, b));
+}
+
+void Text::set_pos(const float32& x, const float32& y)
+{
+	this->pos_ = glm::vec2(x, this->win_height_ - y);
+}
+
+void Text::set_text(const std::string& text)
+{
+	this->text_ = text;
+}
+
+void Text::draw()
+{
+	shader_.use();
+
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(this->vao_);
+
+	glm::vec2 temp = this->pos_;
+	for (const auto& ch : this->text_)
+		if (ch >= 32)
+		{
+			stbtt_aligned_quad q;
+			stbtt_GetBakedQuad(this->font_->cdata_, 512,512, ch-32, 
+							&this->pos_.x, &this->pos_.y, &q, 1);
+
+			float32 quadV[6][4] = 
+			{
+				{q.x1,	q.y0,		q.s1, q.t0},
+				{q.x0,	q.y1,		q.s0, q.t1},
+				{q.x0,	q.y0,		q.s0, q.t0},
+
+				{q.x0,	q.y1,		q.s0, q.t1},
+				{q.x1,	q.y0,		q.s1, q.t0},
+				{q.x1,	q.y1,		q.s1, q.t1},
+	        };
+			glBindTexture(GL_TEXTURE_2D, this->font_->tex_id_);
+			
+	        glBindBuffer(GL_ARRAY_BUFFER, this->vbo_);
+	        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(quadV), &quadV);
+
+	        glBindBuffer(GL_ARRAY_BUFFER, 0);
+	        glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+	this->pos_ = temp;
+	glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
