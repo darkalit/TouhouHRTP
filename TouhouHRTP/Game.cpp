@@ -16,9 +16,10 @@ Game::~Game()
 	for (auto tile : this->tiles_)
 		delete tile;
 
-	for (auto [key, value] : this->textures_)
-		delete value;
+	for (auto val : this->textures_)
+		delete val.second;
 
+	delete this->shader_;
 	delete this->render_;
 	delete this->screen_;
 
@@ -84,20 +85,19 @@ void Game::update		()
 	}
 
 	this->update_player();
-	this->update_ball();	
+	this->update_ball();
 }
 
 void Game::display()
 {
 	for (auto tile : tiles_)
-		tile->draw();
-	reimu_->draw();
-	ball_->draw();
+		tile->draw(this->shader_);
+	reimu_->draw(this->shader_);
+	ball_->draw(this->shader_);
 	text_->draw();
 
 	/*==============================*/
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	this->render_->display();
 
 	glfwPollEvents();
@@ -144,6 +144,7 @@ void Game::init_window()
 void Game::init_textures()
 {
 	this->font_		= new Font("Fonts/Heuristica-Regular.ttf");
+	this->shader_	= new Shader(glsl::vSprite, glsl::fSprite, nullptr, true);
 
 	this->textures_["Player"] = new Texture;
 	this->textures_.at("Player")->texFromBin("Textures/reimu.dat");

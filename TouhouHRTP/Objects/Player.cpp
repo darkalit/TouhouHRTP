@@ -15,6 +15,7 @@ Player::~Player()
 	for (auto& kv : this->sprites_)
 		for (auto sprite : kv.second)
 			delete sprite;
+	//delete this->shader_;
 }
 
 auto Player::stand	() -> bool
@@ -198,7 +199,7 @@ void Player::update(const float32& delta_time)
 		this->set_pos(floor(static_cast<float32>(this->screen_width_) - this->get_size().x), this->get_pos().y);
 }
 
-void Player::draw()
+void Player::draw(Shader* shader)
 {
-	this->temp_->draw(this->pos_, this->scale_);
+	this->temp_->draw(shader, this->pos_, this->scale_);
 }

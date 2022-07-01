@@ -28,7 +28,7 @@ public:
 	
 	void update_input	(const float32& delta_time);
 	void update			(const float32& delta_time)	override;
-	void draw			()							override;
+	void draw			(Shader* shader)			override;
 	
 	bool		anim_flag_ls_	{false};
 	bool		anim_flag_rs_	{false};

@@ -4,8 +4,7 @@
 //#include "stb_image.h"
 
 Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, const bool& centering)
-	:	
-	shader	(Shader(glsl::vSprite, glsl::fSprite, nullptr, true)),
+	:
 	texture	(texture),
 	size(glm::ivec2(texture->width, texture->height)),
 	pos(glm::vec2(0.0f)),
@@ -15,15 +14,11 @@ Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, con
 	glfwGetFramebufferSize(window, &winSizeX, &winSizeY);
 	this->proj	= glm::ortho(0.0f, static_cast<float32>(winSizeX), static_cast<float32>(winSizeY), 0.0f, -1.0f, 1.0f);
 	this->model = glm::mat4(1.0f);
-	this->shader.use();
-	this->shader.setMat4("model", this->model);
-	this->shader.setMat4("projection", this->proj);
 	loadSprite(centering);
 }
 
 Sprite::Sprite(Texture* texture, const glm::ivec4& rect, const glm::ivec2& customSize, const bool& centering)
-	:	
-	shader	(Shader(glsl::vSprite, glsl::fSprite, nullptr, true)), 
+	:
 	texture	(texture),
 	size(glm::ivec2(texture->width, texture->height)),
 	pos(glm::vec2(0.0f)),
@@ -31,10 +26,6 @@ Sprite::Sprite(Texture* texture, const glm::ivec4& rect, const glm::ivec2& custo
 {
 	this->proj = glm::ortho(0.0f, static_cast<float32>(customSize.x), static_cast<float32>(customSize.y), 0.0f, -1.0f, 1.0f);
 	this->model = glm::mat4(1.0f);
-	this->shader.use();
-	this->shader.setMat4("model", this->model);
-	this->shader.setMat4("projection", this->proj);
-	//glGenTextures(1, &this->texture.ID);
 	loadSprite(centering);
 }
 
@@ -86,21 +77,23 @@ void Sprite::loadSprite(const bool& centering)
 	glBindVertexArray(0);
 }
 
-void Sprite::clear()
+void Sprite::clear(Shader* shader)
 {
-	this->shader.use();
-	this->shader.setMat4("model", this->model);
+	shader->use();
+	shader->setMat4("model", this->model);
+	shader->setMat4("projection", this->proj);
 	model = glm::mat4(1.0f);
 }
 
-void Sprite::draw(const glm::vec2& position, const glm::vec2& scale, const float32& angle)
+void Sprite::draw(Shader* shader, const glm::vec2& position, const glm::vec2& scale, const float32& angle)
 {
-	this->shader.use();
+	shader->use();
 	this->model = glm::mat4(1.0f);
 	this->model = glm::translate(this->model, glm::vec3(position, 0.0f));
 	this->model = glm::rotate(this->model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 	this->model = glm::scale(this->model, glm::vec3(scale, 1.0f));
-	this->shader.setMat4("model", this->model);
+	shader->setMat4("model", this->model);
+	shader->setMat4("projection", this->proj);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->texture->ID);
 	glBindVertexArray(this->VAO);

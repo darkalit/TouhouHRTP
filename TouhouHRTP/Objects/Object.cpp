@@ -56,11 +56,12 @@ auto Object::get_size	() -> glm::vec2
 
 bool Object::check_intersect(Object& object)
 {
-	if (this->get_bounds().topLeft.x > object.get_bounds().bottomRight.x ||
-		this->get_bounds().topLeft.y < object.get_bounds().bottomRight.y ||
-		this->get_bounds().bottomRight.x < object.get_bounds().topLeft.x ||
-		this->get_bounds().bottomRight.y > object.get_bounds().topLeft.y)
+	Rect boundsl = this->get_bounds();
+	Rect boundsr = object.get_bounds();
+	if (boundsl.topLeft.x > boundsr.bottomRight.x ||
+		boundsl.topLeft.y < boundsr.bottomRight.y ||
+		boundsl.bottomRight.x < boundsr.topLeft.x ||
+		boundsl.bottomRight.y > boundsr.topLeft.y)
 		return false;
-	else
-		return true;
+	return true;
 }

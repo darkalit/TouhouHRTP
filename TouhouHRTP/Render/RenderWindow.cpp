@@ -34,20 +34,10 @@ RenderWindow::RenderWindow(const Shader& shader, const int32& width, const int32
 
 RenderWindow::~RenderWindow()
 {
-	//glDeleteTextures(1, &scrnTex);
-	//glDeleteTextures(1, &textureColorbufferMSAA);
-	//glDeleteVertexArrays(1, &quadVAO);
-	//glDeleteRenderbuffers(1, &RBO);
-	//glDeleteFramebuffers(1, &FBO);
-	//glDeleteFramebuffers(1, &interFBO);
-	glfwTerminate();
+	glDeleteFramebuffers(1, &this->_MSFBO);
+	glDeleteFramebuffers(1, &this->_FBO);
+	glDeleteRenderbuffers(1, &this->_RBO);
 }
-
-//void RenderWindow::init(const Shader& shader, const int32& width, const int32& height)
-//{
-//	this->size = glm::ivec2(width, height);
-//	this->shader = shader;
-//}
 
 void RenderWindow::clear()
 {

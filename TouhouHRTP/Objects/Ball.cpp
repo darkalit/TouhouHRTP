@@ -79,7 +79,7 @@ void Ball::update(const float32& delta_time)
 	}
 }
 
-void Ball::draw()
+void Ball::draw(Shader* shader)
 {
-	this->temp_->draw(this->pos_);
+	this->temp_->draw(shader, this->pos_);
 }

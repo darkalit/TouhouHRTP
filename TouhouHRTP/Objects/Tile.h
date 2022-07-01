@@ -20,7 +20,7 @@ public:
 	auto get_state	()	-> State;
 
 	void update		(const float32& delta_time)	override;
-	void draw		()							override;
+	void draw		(Shader* shader)			override;
 
 private:
 	bool flip_f_	{false};

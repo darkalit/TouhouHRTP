@@ -15,6 +15,7 @@ Tile::~Tile	()
 	for (auto& kv : this->sprites_)
 		for (auto sprite : kv.second)
 			delete sprite;
+	//delete this->shader_;
 }
 
 auto Tile::flip			() -> bool
@@ -77,7 +78,7 @@ void Tile::update		(const float32& delta_time)
 	}	
 }
 
-void Tile::draw			()
+void Tile::draw			(Shader* shader)
 {
-	this->temp_->draw(this->pos_);
+	this->temp_->draw(shader, this->pos_);
 }

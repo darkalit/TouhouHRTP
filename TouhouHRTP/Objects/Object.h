@@ -19,13 +19,13 @@ public:
 	virtual auto check_intersect	(Object& object) -> bool;
 
 	virtual void update	(const float32& delta_time)	= 0;
-	virtual void draw	()							= 0;
+	virtual void draw	(Shader* shader)			= 0;
 
 protected:
 	std::map<std::string, std::vector<Sprite*>> sprites_ {};
 	Sprite*		temp_	{};
 	glm::vec2	pos_	{};
-	glm::vec2	scale_	{};
+	glm::vec2	scale_	{1.0f, 1.0f};
 	Rect		bounds_	{};
 	float32		angle_	{}; 
 

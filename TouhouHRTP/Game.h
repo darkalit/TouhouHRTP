@@ -24,7 +24,8 @@ private:
 	Shader*				screen_	{};
 	RenderWindow*		render_	{};
 
-	std::map<std::string, Texture*>	textures_{};
+	std::map<std::string, Texture*>	textures_	{};
+	Shader*				shader_					{};
 
 	Font*	  			font_	{};
 	Text*				text_	{};

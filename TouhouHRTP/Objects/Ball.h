@@ -12,7 +12,7 @@ public:
 	void set_vel	(const float32& x_vel, const float32& y_vel);
 
 	void update		(const float32& delta_time)	override;
-	void draw		()							override;
+	void draw		(Shader* shader)			override;
 
 private:
 	float32 gravity_	{-900.0f}, 

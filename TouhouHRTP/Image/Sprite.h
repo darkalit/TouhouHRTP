@@ -2,7 +2,6 @@
 
 #include "../Render/RenderWindow.h"
 #include "../Render/Shader.h"
-#include "../Render/ShaderList.h"
 
 struct Rect
 {
@@ -21,16 +20,15 @@ public:
 					 const glm::ivec2& customSize = glm::ivec2(0, 0), 
 					 const bool& centering = true);
 	void loadSprite	(const bool& centering = true);
-	void clear		();
-	void draw		(const glm::vec2& position, 
+	void clear		(Shader* shader);
+	void draw		(Shader* shader,
+					 const glm::vec2& position, 
 					 const glm::vec2& scale = glm::vec2(1.0f, 1.0f), 
 					 const float32& angle = 0.0f);
 
 	auto getEdges	() -> glm::ivec4;
 	auto getSize	() -> glm::vec2;
 	auto getBounds	() -> Rect;
-
-	Shader shader;
 
 private:
 	glm::mat4	model	{}, 
