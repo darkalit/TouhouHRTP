@@ -4,7 +4,7 @@
 class Ball : public Object
 {
 public:
-	Ball			(const uint32& screen_width, const uint32& screen_height);
+	Ball			(Texture* texture, const uint32& screen_width, const uint32& screen_height);
 	~Ball			() override;
 
 	auto fall		(const float32& delta_time)	-> bool;

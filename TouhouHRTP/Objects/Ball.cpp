@@ -1,10 +1,10 @@
 #include "Ball.h"
 
-Ball::Ball(const uint32& screen_width, const uint32& screen_height)
+Ball::Ball(Texture* texture, const uint32& screen_width, const uint32& screen_height)
 {
 	this->screen_width_	= screen_width;
 	this->screen_height_ = screen_height;
-	this->texture_.texFromImage("Textures/tiles.png");
+	this->texture_ = texture;
 	this->Ball::init_textures();
 	this->temp_ = this->sprites_["ball"][this->iter_];
 }
@@ -44,10 +44,10 @@ void Ball::init_textures	()
 {
 	this->sprites_["ball"] = std::vector<Sprite*>
 	{
-		new Sprite(this->texture_, glm::ivec4(102, 100, 128, 126), glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(this->texture_, glm::ivec4(102, 127, 128, 153), glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(this->texture_, glm::ivec4(102, 154, 128, 180), glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(this->texture_, glm::ivec4(102, 181, 128, 207), glm::ivec2(screen_width_, screen_height_)) 
+		new Sprite(this->texture_, glm::ivec4(96, 96, 121, 121), glm::ivec2(screen_width_, screen_height_)),
+		new Sprite(this->texture_, glm::ivec4(96, 121, 121, 146), glm::ivec2(screen_width_, screen_height_)),
+		new Sprite(this->texture_, glm::ivec4(96, 146, 121, 171), glm::ivec2(screen_width_, screen_height_)),
+		new Sprite(this->texture_, glm::ivec4(96, 171, 121, 196), glm::ivec2(screen_width_, screen_height_)) 
 	};
 }
 

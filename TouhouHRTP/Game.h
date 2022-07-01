@@ -13,24 +13,24 @@ public:
 	Game	();
 	~Game	();
 
-	auto is_running	() -> bool;
-	void clear		();
-	void process_input ();
-	void update		();
-	void display	();
+	auto is_running		() -> bool;
+	void clear			();
+	void process_input	();
+	void update			();
+	void display		();
+
+private:
+	GLFWwindow*			window_	{};
+	Shader*				screen_	{};
+	RenderWindow*		render_	{};
+
+	std::map<std::string, Texture*>	textures_{};
 
 	Font*	  			font_	{};
 	Text*				text_	{};
 	Player*				reimu_	{};
 	Ball*				ball_	{};
 	std::vector<Tile*>	tiles_	{};
-
-	float32	delta_time_		{};
-
-private:	
-	GLFWwindow*			window_	{};
-	Shader*				screen_	{};
-	RenderWindow*		render_	{};	
 
 	// screen sizes
 	const int32		win_width_	{1440};
@@ -42,6 +42,8 @@ private:
 	const char*		title_		{"TOUHOU"};
 
 	// frametime vars
+	float32	delta_time_		{};
+
 	float32	last_frame_		{};
 	float32	last_time_		{};
 	int32	frame_count_	{};
@@ -55,11 +57,10 @@ private:
 	void update_player		();
 
 	void init_window		();
-	//void initTextures();
+	void init_textures		();
 	void init_objects		();
 
 	static void framebuffer_size_callback(GLFWwindow*, int32, int32);
-	//void keyCallback(GLFWwindow*, int32, int32, int32, int32);
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void keyCallback(GLFWwindow*, int, int, int, int);
 };
 

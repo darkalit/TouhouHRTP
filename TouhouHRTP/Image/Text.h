@@ -10,7 +10,7 @@
 class Text
 {
 public:
-	Text(Font* font, GLFWwindow* window);
+	Text(Font* font, const uint32& screen_width, const uint32& screen_height);
 
 	void set_color(float32 r, float32 g, float32 b);
 	void set_pos(const float32& x, const float32& y);

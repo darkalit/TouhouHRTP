@@ -18,58 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\vendor\stb_image.h" />
-    <ClInclude Include="..\vendor\stb_image_write.h" />
-    <ClInclude Include="..\vendor\stb_truetype.h" />
-    <ClInclude Include="Debug.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="headers.h" />
-    <ClInclude Include="Image\Font.h" />
-    <ClInclude Include="Image\Sprite.h" />
-    <ClInclude Include="Image\Text.h" />
-    <ClInclude Include="Image\Texture.h" />
-    <ClInclude Include="Objects\Ball.h" />
-    <ClInclude Include="Objects\Object.h" />
-    <ClInclude Include="Objects\Player.h" />
-    <ClInclude Include="Objects\Tile.h" />
-    <ClInclude Include="Render\RenderWindow.h" />
-    <ClInclude Include="Render\Resources.h" />
-    <ClInclude Include="Render\Shader.h" />
-    <ClInclude Include="Render\ShaderList.h" />
-    <ClInclude Include="Utility.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\vendor\glad.c" />
-    <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Image\Font.cpp" />
-    <ClCompile Include="Image\Sprite.cpp" />
-    <ClCompile Include="Image\Text.cpp" />
-    <ClCompile Include="Image\Texture.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Objects\Ball.cpp" />
-    <ClCompile Include="Objects\Object.cpp" />
-    <ClCompile Include="Objects\Player.cpp" />
-    <ClCompile Include="Objects\Tile.cpp" />
-    <ClCompile Include="Render\RenderWindow.cpp" />
-    <ClCompile Include="Render\Resources.cpp" />
-    <ClCompile Include="Render\Shader.cpp" />
-    <ClCompile Include="Render\ShaderList.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="Shaders\fScreen.glsl" />
-    <None Include="Shaders\fText.glsl" />
-    <None Include="Shaders\vScreen.glsl" />
-    <None Include="Shaders\vSprite.glsl" />
-    <None Include="Shaders\vText.glsl" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2925fe63-9304-47df-a7e5-05d4bcdabc15}</ProjectGuid>
-    <RootNamespace>TouhouHRTP</RootNamespace>
+    <ProjectGuid>{c1fceaf2-abc3-4e49-aead-58c4b5b5ce16}</ProjectGuid>
+    <RootNamespace>imgtobin</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -117,18 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -163,14 +104,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Projects\Touhou\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -181,18 +119,18 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Projects\Touhou\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

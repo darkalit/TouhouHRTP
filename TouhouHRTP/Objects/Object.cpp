@@ -11,7 +11,7 @@ void Object::set_pos		(const float32& x, const float32& y)
 	this->pos_ = glm::vec2(x, y);
 }
 
-void Object::move		(const float32& x, const float32& y)
+void Object::move			(const float32& x, const float32& y)
 {
 	this->set_pos(this->get_pos().x + x, this->get_pos().y + y);
 }

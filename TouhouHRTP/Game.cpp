@@ -3,6 +3,7 @@
 Game::Game()
 {
 	this->init_window();
+	this->init_textures();
 	this->init_objects();
 }
 
@@ -14,6 +15,9 @@ Game::~Game()
 	delete this->font_;
 	for (auto tile : this->tiles_)
 		delete tile;
+
+	for (auto [key, value] : this->textures_)
+		delete value;
 
 	delete this->render_;
 	delete this->screen_;
@@ -133,21 +137,31 @@ void Game::init_window()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	this->screen_ = new Shader(glsl::vScreen, glsl::fScreen);
+	this->screen_ = new Shader(glsl::vScreen, glsl::fScreen, nullptr, true);
 	this->render_ = new RenderWindow(*this->screen_, this->win_width_, this->win_height_);
+}
+
+void Game::init_textures()
+{
+	this->font_		= new Font("Fonts/Heuristica-Regular.ttf");
+
+	this->textures_["Player"] = new Texture;
+	this->textures_.at("Player")->texFromBin("Textures/reimu.dat");
+
+	this->textures_["Tiles"] = new Texture;
+	this->textures_.at("Tiles")->texFromBin("Textures/tiles.dat");
 }
 
 void Game::init_objects()
 {
-	this->font_		= new Font("Fonts/Heuristica-Regular.ttf");
-	this->text_		= new Text	(this->font_, this->window_);
-	this->reimu_	= new Player(this->window_, this->scr_width_, this->scr_height_);
-	this->ball_		= new Ball	(this->scr_width_, this->scr_height_);
+	this->text_		= new Text	(this->font_, this->win_width_, this->win_height_);
+	this->reimu_	= new Player(this->textures_.at("Player"), this->scr_width_, this->scr_height_);
+	this->ball_		= new Ball	(this->textures_.at("Tiles"), this->scr_width_, this->scr_height_);
 	for (int32 i = 0; i < 10; ++i)
 		for (int32 j = 0; j < 10; ++j)
 		{
 			const int32 v = i * 10 + j;
-			this->tiles_.push_back(new Tile(this->scr_width_, this->scr_height_, 1));
+			this->tiles_.push_back(new Tile(this->textures_.at("Tiles"), this->scr_width_, this->scr_height_, Tile::State::PHASE3));
 			this->tiles_[v]->set_pos(
 				2 * this->tiles_[v]->get_size().x * static_cast<float32>(i + 1), 
 				2 * this->tiles_[v]->get_size().y * static_cast<float32>(j + 1));

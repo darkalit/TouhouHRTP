@@ -7,16 +7,14 @@
 #include "stb_image_write.h"
 #include "../Debug.h"
 
-Text::Text(Font* font, GLFWwindow* window)
+Text::Text(Font* font, const uint32& screen_width, const uint32& screen_height)
 	:
-	font_(font), shader_(Shader(glsl::vText, glsl::fText))
+	font_(font), shader_(Shader(glsl::vText, glsl::fText, nullptr, true))
 {
-	int winSizeX, winSizeY;
-	glfwGetFramebufferSize(window, &winSizeX, &winSizeY);
-	this->win_height_ = static_cast<float32>(winSizeY);
+	this->win_height_ = static_cast<float32>(screen_height);
 	this->proj_	= glm::ortho(0.0f, 
-		static_cast<float32>(winSizeX), 
-		static_cast<float32>(winSizeY), 
+		static_cast<float32>(screen_width), 
+		static_cast<float32>(screen_height), 
 		0.0f, -1.0f, 1.0f);
 	shader_.use();
 	shader_.setMat4("projection", this->proj_);

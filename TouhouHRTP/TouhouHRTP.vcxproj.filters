@@ -143,5 +143,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="Shaders\vSprite.glsl" />
+    <None Include="Shaders\vScreen.glsl" />
+    <None Include="Shaders\fScreen.glsl" />
+    <None Include="Shaders\vText.glsl" />
+    <None Include="Shaders\fText.glsl" />
   </ItemGroup>
 </Project>

@@ -61,7 +61,55 @@ void Texture::texFromImage(const std::string& filepath)
 	}
 	else
 		std::cout << "Texture failed to load at path:" << filepath << std::endl;
+
 	stbi_image_free(data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::texFromBin(const std::string& filepath)
+{
+	int32 nrChannels;
+
+	std::ifstream file(filepath, std::ios::binary);
+	file.read(reinterpret_cast<char*>(&this->width), sizeof(int32));
+	file.read(reinterpret_cast<char*>(&this->height), sizeof(int32));
+	file.read(reinterpret_cast<char*>(&nrChannels), sizeof(int32));
+
+	char* data = new char[this->width * this->height * nrChannels];
+
+	file.read(data, this->width * this->height * nrChannels);
+
+	file.close();
+
+	if (data)
+	{
+		GLenum format = 0;
+		switch (nrChannels)
+		{
+		case 1:
+			format = GL_RED;	break;
+		case 2:
+			format = GL_RG;		break;
+		case 3:
+			format = GL_RGB;	break;
+		case 4:
+			format = GL_RGBA;	break;
+		default:				break;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, this->ID);
+		glTexImage2D(GL_TEXTURE_2D, 0, static_cast<int32>(format), this->width, this->height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+	else
+		std::cout << "Texture failed to load at path:" << filepath << std::endl;
+
+	delete[] data;
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

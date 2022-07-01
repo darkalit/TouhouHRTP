@@ -1,12 +1,11 @@
 #include "Player.h"
 
 
-Player::Player(GLFWwindow* window, const uint32& screen_width, const uint32& screen_height)
-	:	window_(window)
+Player::Player(Texture* texture, const uint32& screen_width, const uint32& screen_height)
 {
 	this->screen_width_ = screen_width;
 	this->screen_height_ = screen_height;
-	this->texture_.texFromImage("Textures/reimu.png");
+	this->texture_ = texture;
 	this->Player::init_textures();
 	this->temp_ = this->sprites_["stand"][0];
 }
@@ -20,6 +19,7 @@ Player::~Player()
 
 auto Player::stand	() -> bool
 {
+	this->state_ = State::STAND;
 	this->temp_ = this->sprites_["stand"][0];
 	this->set_pos(this->get_pos().x, this->get_pos().y);
 	this->set_scale(glm::vec2(1.0f, 1.0f));
@@ -28,6 +28,7 @@ auto Player::stand	() -> bool
 
 auto Player::run	(const float32& delta_time, const int8& direction) -> bool
 {
+	this->state_ = State::RUNNING;
 	this->iter_ %= this->sprites_["run"].size();
 
 	this->temp_ = this->sprites_["run"][iter_];
@@ -56,6 +57,7 @@ auto Player::run	(const float32& delta_time, const int8& direction) -> bool
 
 auto Player::slide	(const float32& delta_time, const int8& direction) -> bool
 {
+	this->state_ = State::SLIDING_L * (direction == -1) + State::SLIDING_R * (direction == 1);
 	this->iter_ %= this->sprites_["slide"].size();
 
 	this->temp_ = this->sprites_["slide"][iter_];
@@ -64,7 +66,8 @@ auto Player::slide	(const float32& delta_time, const int8& direction) -> bool
 	this->time_ *= static_cast<float32>(this->time_ * delta_time < 0.1f);
 	this->iter_ += static_cast<uint32>(this->time_) == 0;
 
-	this->set_pos(floor(this->get_pos().x + static_cast<float32>(direction) * 200.0f * delta_time), floor(this->get_pos().y));
+	this->set_pos(this->get_pos().x + static_cast<float32>(direction) * 200.0f * delta_time, floor(this->get_pos().y));
+	this->set_scale(glm::vec2(static_cast<float32>(-direction), 1.0f));
 
 	return true;
 
@@ -97,6 +100,11 @@ auto Player::slide	(const float32& delta_time, const int8& direction) -> bool
 	//this->set_scale(glm::vec2(static_cast<float32>(-direction), 1.0f));
 }
 
+auto Player::get_state() -> State
+{
+	return static_cast<State>(this->state_);
+}
+
 void Player::init_textures()
 {
 	this->sprites_["stand"] = std::vector<Sprite*>
@@ -117,12 +125,12 @@ void Player::init_textures()
 
 void Player::update_input(const float32& delta_time)//(GLFWwindow* window, int key, int scancode, int action, int mods)
 {	
-	if (!(glfwGetKey(window_, GLFW_KEY_RIGHT) || glfwGetKey(window_, GLFW_KEY_LEFT)))
-	{
-		this->stand();
-		this->set_pos(this->get_pos().x, this->get_pos().y);
-		this->set_scale(glm::vec2(1.0f, 1.0f));
-	}
+	//if (!(glfwGetKey(window_, GLFW_KEY_RIGHT) || glfwGetKey(window_, GLFW_KEY_LEFT)))
+	//{
+	//	this->stand();
+	//	this->set_pos(this->get_pos().x, this->get_pos().y);
+	//	this->set_scale(glm::vec2(1.0f, 1.0f));
+	//}
 	//else if (glfwGetKey(window_, GLFW_KEY_LEFT) && !anim_flag_ls_ && !anim_flag_rs_)
 	//{
 	//	this->run(delta_time);
@@ -184,8 +192,6 @@ void Player::update_input(const float32& delta_time)//(GLFWwindow* window, int k
 
 void Player::update(const float32& delta_time)
 {
-	//glfwSetKeyCallback(this->window, this->updateInput);
-	//this->update_input(delta_time);
 	if (this->get_pos().x < this->get_size().x + 1.0f)
 		this->set_pos(floor(this->get_size().x + 1.0f), this->get_pos().y);
 	if (this->get_pos().x > static_cast<float32>(this->screen_width_) - this->get_size().x)

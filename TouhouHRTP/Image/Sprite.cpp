@@ -3,11 +3,11 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-Sprite::Sprite(const Texture& texture, GLFWwindow* window, const glm::ivec4& rect, const bool& centering)
+Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, const bool& centering)
 	:	
-	shader	(Shader(glsl::vSprite, glsl::fSprite)), 
+	shader	(Shader(glsl::vSprite, glsl::fSprite, nullptr, true)),
 	texture	(texture),
-	size(glm::ivec2(texture.width, texture.height)),
+	size(glm::ivec2(texture->width, texture->height)),
 	pos(glm::vec2(0.0f)),
 	rect(rect)
 {
@@ -21,11 +21,11 @@ Sprite::Sprite(const Texture& texture, GLFWwindow* window, const glm::ivec4& rec
 	loadSprite(centering);
 }
 
-Sprite::Sprite(const Texture& texture, const glm::ivec4& rect, const glm::ivec2& customSize, const bool& centering)
+Sprite::Sprite(Texture* texture, const glm::ivec4& rect, const glm::ivec2& customSize, const bool& centering)
 	:	
-	shader	(Shader(glsl::vSprite, glsl::fSprite)), 
+	shader	(Shader(glsl::vSprite, glsl::fSprite, nullptr, true)), 
 	texture	(texture),
-	size(glm::ivec2(texture.width, texture.height)),
+	size(glm::ivec2(texture->width, texture->height)),
 	pos(glm::vec2(0.0f)),
 	rect(rect)
 {
@@ -102,7 +102,7 @@ void Sprite::draw(const glm::vec2& position, const glm::vec2& scale, const float
 	this->model = glm::scale(this->model, glm::vec3(scale, 1.0f));
 	this->shader.setMat4("model", this->model);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->texture.ID);
+	glBindTexture(GL_TEXTURE_2D, this->texture->ID);
 	glBindVertexArray(this->VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);

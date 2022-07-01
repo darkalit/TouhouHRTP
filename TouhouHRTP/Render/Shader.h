@@ -8,10 +8,12 @@ public:
 	uint32 ID{};
 
 	Shader	() { this->ID = 0; }
-	Shader	(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr);
+	Shader	(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr, const bool& fileRead = false);
+	//Shader	(const char* vertexSource)
 	~Shader	();
 
 	void compile	(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr);
+	void compile_from_file (const char* vertexFile, const char* fragmentFile, const char* geometryFile = nullptr);
 	Shader &use		();
 
 	void setBool	(const std::string& name, const bool&		value);

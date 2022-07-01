@@ -15,9 +15,9 @@ struct Rect
 class Sprite
 {
 public:
-	Sprite			(const Texture& texture, GLFWwindow* window, 
+	Sprite			(Texture* texture, GLFWwindow* window, 
 					 const glm::ivec4& rect, const bool& centering = true);
-	Sprite			(const Texture& texture, const glm::ivec4& rect, 
+	Sprite			(Texture* texture, const glm::ivec4& rect, 
 					 const glm::ivec2& customSize = glm::ivec2(0, 0), 
 					 const bool& centering = true);
 	void loadSprite	(const bool& centering = true);
@@ -33,14 +33,14 @@ public:
 	Shader shader;
 
 private:
-	glm::mat4	model{}, 
-				proj{};
-	Texture		texture{};
-	glm::ivec2	size{};
-	glm::vec2	pos{};
-	glm::ivec4	rect{};
-	Rect		bounds{};
-	uint32		VAO{}, 
-				VBO{};
+	glm::mat4	model	{}, 
+				proj	{};
+	Texture*	texture	{};
+	glm::ivec2	size	{};
+	glm::vec2	pos		{};
+	glm::ivec4	rect	{};
+	Rect		bounds	{};
+	uint32		VAO		{}, 
+				VBO		{};
 	float32		quadV[24]{};
 };

@@ -1,8 +1,11 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexSource, const char* fragmentSource, const char* geometrySource)
+Shader::Shader(const char* vertexSource, const char* fragmentSource, const char* geometrySource, const bool& fileRead)
 {
-	this->compile(vertexSource, fragmentSource, geometrySource);
+	if (fileRead)
+		this->compile_from_file(vertexSource, fragmentSource, geometrySource);
+	else
+		this->compile(vertexSource, fragmentSource, geometrySource);
 }
 
 Shader::~Shader()
@@ -29,7 +32,7 @@ void Shader::compile(const char* vertexSource, const char* fragmentSource, const
 		glShaderSource(geometryShader, 1, &geometrySource, NULL);
 		glCompileShader(geometryShader);
 		checkCompileErrors(geometryShader, "GEOMETRY");
-	}	
+	}
 
 	this->ID = glCreateProgram();
 	glAttachShader(this->ID, vertexShader);
@@ -45,6 +48,50 @@ void Shader::compile(const char* vertexSource, const char* fragmentSource, const
 	glDeleteShader(fragmentShader);
 	if (geometrySource != nullptr)
 		glDeleteShader(geometryShader);
+}
+
+void Shader::compile_from_file(const char* vertexFile, const char* fragmentFile, const char* geometryFile)
+{
+	std::string vertexCode, fragmentCode, geometryCode;
+	std::ifstream vShaderFile, fShaderFile, gShaderFile;
+
+	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	try
+	{
+		vShaderFile.open(vertexFile);
+		fShaderFile.open(fragmentFile);
+		std::stringstream vShaderStream, fShaderStream;
+
+		vShaderStream << vShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
+		vShaderFile.close();
+		fShaderFile.close();
+
+		vertexCode = vShaderStream.str();
+		fragmentCode = fShaderStream.str();
+
+		if (geometryFile != nullptr)
+		{
+			gShaderFile.open(geometryFile);
+			std::stringstream gShaderStream;
+			gShaderStream << gShaderFile.rdbuf();
+			gShaderFile.close();
+			geometryCode = gShaderStream.str();
+		}
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	}
+
+	const char* vShaderCode = vertexCode.c_str();
+	const char* fShaderCode = fragmentCode.c_str();
+	const char* gShaderCode = geometryCode.c_str();
+
+	this->compile(vShaderCode, fShaderCode, geometryCode.empty() ? nullptr : gShaderCode);
 }
 
 Shader &Shader::use		()

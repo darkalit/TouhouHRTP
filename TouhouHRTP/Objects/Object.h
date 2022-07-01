@@ -33,7 +33,7 @@ protected:
 	uint32		screen_width_	{}, 
 				screen_height_	{};
 	uint32		iter_			{};
-	Texture		texture_		{};
+	Texture*	texture_		{};
 
 	virtual void init_textures() = 0;
 };

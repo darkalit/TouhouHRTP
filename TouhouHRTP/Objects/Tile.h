@@ -4,13 +4,15 @@
 class Tile : public Object 
 {
 public:
-	enum class State
+	enum State
 	{
 		DEAD,
-		ALIVE
+		PHASE1,
+		PHASE2,
+		PHASE3
 	};
 
-	Tile	(const uint32& screen_width, const uint32& screen_height, const uint8& phase);
+	Tile	(Texture* texture, const uint32& screen_width, const uint32& screen_height, const State& state);
 	~Tile	() override;
 
 	auto flip		()	-> bool;
@@ -22,7 +24,7 @@ public:
 
 private:
 	bool flip_f_	{false};
-	State state_	{State::ALIVE};
+	uint8 state_	{};
 
 	void init_textures() override;
 };

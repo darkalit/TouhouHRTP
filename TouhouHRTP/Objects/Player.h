@@ -4,7 +4,18 @@
 class Player : public Object
 {
 public:
-	Player	(GLFWwindow* window, const uint32& screen_width, const uint32& screen_height);
+	enum State
+	{
+		STAND,
+		RUNNING,
+		SLIDING_R,
+		SLIDING_L,
+		DYING,
+		DEAD,
+		ATTACKING
+	};
+
+	Player	(Texture* texture, const uint32& screen_width, const uint32& screen_height);
 	~Player	() override;
 
 	auto stand			()							-> bool;
@@ -13,8 +24,9 @@ public:
 	auto attack2		(const float32& delta_time)	-> bool;
 	auto slide			(const float32& delta_time, const int8& direction)	-> bool;
 	auto dead			(const float32& delta_time)	-> bool;
+	auto get_state		()							-> State;
 	
-	void update_input	(const float32& delta_time);//(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void update_input	(const float32& delta_time);
 	void update			(const float32& delta_time)	override;
 	void draw			()							override;
 	
@@ -22,8 +34,8 @@ public:
 	bool		anim_flag_rs_	{false};
 
 private:
-	GLFWwindow* window_;
 	float		anim_time_		{0.0f};
+	int			state_			{STAND};
 
 	void init_textures() override;
 };
