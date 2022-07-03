@@ -11,6 +11,7 @@
 
 //-----The rest-------
 #include <vector>
+#include <array>
 #include <map>
 #include <string>
 #include <fstream>

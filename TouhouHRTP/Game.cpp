@@ -29,9 +29,14 @@ Game::~Game()
 void Game::update_ball()
 {
 	glm::vec2 pushDir = glm::normalize(this->ball_->get_pos() - this->reimu_->get_pos());
-	if (this->ball_->check_intersect(*this->reimu_))
+	if (this->ball_->check_intersect(*this->reimu_) 
+		&& this->reimu_->get_state() != Player::State::DEAD
+		&& !this->reimu_->get_invis()
+		|| (this->ball_->check_intersect(*this->reimu_)
+			&& (this->reimu_->get_state() == Player::State::SLIDE_L
+				|| this->reimu_->get_state() == Player::State::SLIDE_R
+				|| this->reimu_->get_state() == Player::State::ATTACK1)))
 	{
-		//std::cout << "spotted\n";
 		this->ball_->set_vel(600.0f * pushDir.x, 700.0f);
 		//ball->setVel(200.0f * pushDir.x, abs(200.0f * ((int)(pushDir.y * 30.0f) % 3 + 1)) + 10.0f);
 	}
@@ -41,7 +46,13 @@ void Game::update_ball()
 
 void Game::update_player	()
 {
-	reimu_->update(this->delta_time_);
+	if (this->ball_->check_intersect(*this->reimu_) 
+		&& this->reimu_->get_state() != Player::State::DEAD
+		&& !this->reimu_->get_invis())
+	{
+		this->reimu_->set_state(Player::State::DEAD);
+	}
+	this->reimu_->update(this->delta_time_);
 }
 
 auto Game::is_running	() -> bool
@@ -59,8 +70,7 @@ void Game::update		()
 	float32 currentFrame = static_cast<float32>(glfwGetTime());
 	this->delta_time_ = currentFrame - this->last_frame_;
 	this->last_frame_ = currentFrame;
-
-	// process_input(this->window_);
+	
 	this->render_->clear();
 
 	this->text_->set_pos(100.0f * cosf(2.0f * currentFrame) + 700.0f, 
@@ -71,33 +81,56 @@ void Game::update		()
 
 	for (auto tile : tiles_)
 	{
-		if (tile->check_intersect(*this->ball_))
-			tile->flip();
-		tile->update(this->delta_time_);
-
-		auto it = std::remove_if(
-			this->tiles_.begin(),
-			this->tiles_.end(),
-			[](Tile* tile) { return tile->get_state() == Tile::State::DEAD; });
-		this->tiles_.erase(it, this->tiles_.end());
-		if (tile->get_state() == Tile::State::DEAD)
-			delete tile;
+		if (tile->get_state() != Tile::State::DEAD)
+		{
+			if (tile->check_intersect(*this->ball_))
+				tile->flip();
+			tile->update(this->delta_time_);
+		}
+		//auto it = std::remove_if(
+		//	this->tiles_.begin(),
+		//	this->tiles_.end(),
+		//	[](Tile* tile) { return tile->get_state() == Tile::State::DEAD; });
+		//this->tiles_.erase(it, this->tiles_.end());
 	}
 
+	for (auto bullet : player_bullets_)
+	{
+		bullet->update(this->delta_time_);
+		glm::vec2 pushDir = glm::normalize(this->ball_->get_pos() - bullet->get_pos()); 
+		if (bullet->check_intersect(*this->ball_))
+			this->ball_->set_vel(600.0f * pushDir.x, 700.0f);
+
+		if (static_cast<uint32>(bullet->get_pos().y) > scr_height_ || bullet->check_intersect(*this->ball_))
+		{
+			auto it = std::remove(
+				this->player_bullets_.begin(),
+				this->player_bullets_.end(), 
+				bullet);
+			this->player_bullets_.erase(it, this->player_bullets_.end());
+			delete bullet;
+		}
+	}
 	this->update_player();
 	this->update_ball();
 }
 
 void Game::display()
 {
+	glLineWidth(2);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL * this->polygon_flag_ + GL_LINE * !this->polygon_flag_);
+
 	for (auto tile : tiles_)
 		tile->draw(this->shader_);
+	for (auto bullet : player_bullets_)
+		bullet->draw(this->shader_);
 	reimu_->draw(this->shader_);
 	ball_->draw(this->shader_);
 	text_->draw();
 
 	/*==============================*/
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	this->render_->display();
 
 	glfwPollEvents();
@@ -155,6 +188,9 @@ void Game::init_textures()
 
 void Game::init_objects()
 {
+	for (uint16 i = GLFW_KEY_SPACE; i <= GLFW_KEY_LAST; ++i)
+		this->keys_[i][0] = this->keys_[i][1] = GLFW_RELEASE;
+
 	this->text_		= new Text	(this->font_, this->win_width_, this->win_height_);
 	this->reimu_	= new Player(this->textures_.at("Player"), this->scr_width_, this->scr_height_);
 	this->ball_		= new Ball	(this->textures_.at("Tiles"), this->scr_width_, this->scr_height_);
@@ -181,23 +217,40 @@ void Game::framebuffer_size_callback(GLFWwindow* window, int32 width, int32 heig
 
 void Game::process_input()
 {
-	if (!(glfwGetKey(window_, GLFW_KEY_RIGHT) || glfwGetKey(window_, GLFW_KEY_LEFT)))
-		this->reimu_->stand();
+	if (!(glfwGetKey(window_, GLFW_KEY_RIGHT) 
+		|| glfwGetKey(window_, GLFW_KEY_LEFT)))
+		this->reimu_->set_state(Player::State::STAND);
 
-	else if (glfwGetKey(this->window_, GLFW_KEY_LEFT) && !glfwGetKey(window_, GLFW_KEY_X))
-		this->reimu_->run(this->delta_time_, -1);
+	if (glfwGetKey(this->window_, GLFW_KEY_LEFT) 
+		&& !glfwGetKey(window_, GLFW_KEY_X))
+		this->reimu_->set_state(Player::State::RUN_L);
+	
+	if (glfwGetKey(this->window_, GLFW_KEY_RIGHT) 
+		&& !glfwGetKey(window_, GLFW_KEY_X))
+		this->reimu_->set_state(Player::State::RUN_R);
 
-	else if (glfwGetKey(this->window_, GLFW_KEY_RIGHT) && !glfwGetKey(window_, GLFW_KEY_X))
-		this->reimu_->run(this->delta_time_, 1);
+	if (glfwGetKey(this->window_, GLFW_KEY_X) 
+		&& glfwGetKey(this->window_, GLFW_KEY_LEFT))
+		this->reimu_->set_state(Player::State::SLIDE_L);
 
-	if (glfwGetKey(window_, GLFW_KEY_X) && glfwGetKey(window_, GLFW_KEY_LEFT))
-		this->reimu_->slide(this->delta_time_, -1);
+	if (glfwGetKey(this->window_, GLFW_KEY_X) 
+		&& glfwGetKey(this->window_, GLFW_KEY_RIGHT))
+		this->reimu_->set_state(Player::State::SLIDE_R);
 
-	else if (glfwGetKey(window_, GLFW_KEY_X) && glfwGetKey(window_, GLFW_KEY_RIGHT))
-		this->reimu_->slide(this->delta_time_, 1);
+	if (glfwGetKey(this->window_, GLFW_KEY_X) 
+		&& !glfwGetKey(this->window_, GLFW_KEY_LEFT)
+		&& !glfwGetKey(this->window_, GLFW_KEY_RIGHT))
+		this->reimu_->set_state(Player::State::ATTACK1);
 
-	glLineWidth(2);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL * this->polygon_flag_ + GL_LINE * !this->polygon_flag_);
+	this->keys_.at(GLFW_KEY_Z)[1] = static_cast<uint8>(glfwGetKey(window_, GLFW_KEY_Z));
+	if (this->keys_.at(GLFW_KEY_Z)[1] == GLFW_RELEASE 
+		&& this->keys_.at(GLFW_KEY_Z)[0] == GLFW_PRESS
+		&& this->reimu_->get_state() != Player::State::DEAD)
+		this->player_bullets_.push_back(
+			new PlayerBullet(textures_.at("Tiles"), 
+				this->reimu_->get_pos(), 
+				this->scr_width_, this->scr_height_));
+	this->keys_.at(GLFW_KEY_Z)[0] = this->keys_.at(GLFW_KEY_Z)[1];
 }
 
 

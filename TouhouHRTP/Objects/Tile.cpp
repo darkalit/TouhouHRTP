@@ -15,7 +15,6 @@ Tile::~Tile	()
 	for (auto& kv : this->sprites_)
 		for (auto sprite : kv.second)
 			delete sprite;
-	//delete this->shader_;
 }
 
 auto Tile::flip			() -> bool
@@ -32,7 +31,7 @@ void Tile::init_textures	()
 {
 	this->sprites_["0"] = std::vector<Sprite*>
 	{
-		new Sprite(this->texture_, glm::ivec4(96, 408, 126, 438), glm::ivec2(this->screen_width_, this->screen_height_))
+		new Sprite(this->texture_, glm::ivec4(164, 200, 194, 230), glm::ivec2(this->screen_width_, this->screen_height_))
 	};
 	this->sprites_["1"] = std::vector<Sprite*>
 	{
@@ -57,24 +56,16 @@ void Tile::init_textures	()
 void Tile::update		(const float32& delta_time)
 {
 	if (this->flip_f_) 
-	{	
-		if (this->iter_ >= this->sprites_[std::to_string(this->state_)].size())
-		{
-			if (this->state_ > 0)
-			{
-				--this->state_;
-				this->flip_f_ = false;
-			}
-			this->iter_ = 0;
-		}
+	{
+		this->state_ -= this->state_ > 0 && this->iter_ >= this->sprites_.at(std::to_string(this->state_)).size();
+		this->flip_f_ = (this->state_ > 0) && (this->iter_ < this->sprites_.at(std::to_string(this->state_)).size());
+		this->iter_ *= this->iter_ < this->sprites_.at(std::to_string(this->state_)).size();
+
 		this->temp_ = this->sprites_[std::to_string(this->state_)][iter_];
 		this->time_++;
-		if (this->time_ * delta_time > 0.3f)
-		{
-			this->time_ = 0.0f;
-			this->iter_++;
-		}
-		
+
+		this->time_ *= static_cast<float32>(this->time_ * delta_time <= 0.3f);
+		this->iter_ += static_cast<uint32>(this->time_) == 0;		
 	}	
 }
 

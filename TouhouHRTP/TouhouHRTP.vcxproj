@@ -33,6 +33,7 @@
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Objects\Player.h" />
     <ClInclude Include="Objects\Tile.h" />
+    <ClInclude Include="Objects\PlayerBullet.h" />
     <ClInclude Include="Render\RenderWindow.h" />
     <ClInclude Include="Render\Resources.h" />
     <ClInclude Include="Render\Shader.h" />
@@ -52,6 +53,7 @@
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Objects\Player.cpp" />
     <ClCompile Include="Objects\Tile.cpp" />
+    <ClCompile Include="Objects\PlayerBullet.cpp" />
     <ClCompile Include="Render\RenderWindow.cpp" />
     <ClCompile Include="Render\Resources.cpp" />
     <ClCompile Include="Render\Shader.cpp" />

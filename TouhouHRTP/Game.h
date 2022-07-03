@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Objects/Player.h"
+#include "Objects/PlayerBullet.h"
 #include "Objects/Ball.h"
 #include "Objects/Tile.h"
 #include "Image/Text.h"
@@ -32,10 +33,11 @@ private:
 	Player*				reimu_	{};
 	Ball*				ball_	{};
 	std::vector<Tile*>	tiles_	{};
+	std::vector<PlayerBullet*>	player_bullets_	{};
 
 	// screen sizes
-	const int32		win_width_	{1440};
-	const int32		win_height_ {900};
+	const int32		win_width_	{1440};//{800};
+	const int32		win_height_ {900};//{500};
 
 	const uint32	scr_width_	{640};
 	const uint32	scr_height_ {400};
@@ -53,6 +55,7 @@ private:
 
 	bool	polygon_flag_	{true};
 	bool	runtime_flag_	{true};
+	std::map<uint16, std::array<bool, 2>> keys_ {};
 
 	void update_ball		();
 	void update_player		();
