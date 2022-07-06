@@ -1,11 +1,8 @@
 #pragma once
 
 #include "../headers.h"
-#include "../Render/Shader.h"
-#include "../Render/ShaderList.h"
 #include "Font.h"
-#include "stb_truetype.h"
-#include "stb_image_write.h"
+#include "../Render/Resources.h"
 
 class Text
 {
@@ -21,7 +18,6 @@ public:
 private:
 	Font*		font_		{};
 	float32		win_height_	{};
-	Shader		shader_		{};
 	std::string text_		{};
 	glm::mat4	model_		{}, 
 				proj_		{};

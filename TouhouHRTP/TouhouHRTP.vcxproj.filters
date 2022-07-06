@@ -54,9 +54,6 @@
     <ClInclude Include="Image\Texture.h">
       <Filter>Header Files\ImageManagement</Filter>
     </ClInclude>
-    <ClInclude Include="Render\ShaderList.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Render\Shader.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -93,6 +90,9 @@
     <ClInclude Include="Objects\PlayerBullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Objects\Rectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -119,9 +119,6 @@
     <ClCompile Include="Image\Texture.cpp">
       <Filter>Source Files\ImageManagement</Filter>
     </ClCompile>
-    <ClCompile Include="Render\ShaderList.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Render\Shader.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -146,6 +143,9 @@
     <ClCompile Include="Objects\PlayerBullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vSprite.glsl" />
@@ -153,5 +153,9 @@
     <None Include="Shaders\fScreen.glsl" />
     <None Include="Shaders\vText.glsl" />
     <None Include="Shaders\fText.glsl" />
+    <None Include="Shaders\fSparkle.glsl" />
+    <None Include="Shaders\vSparkle.glsl" />
+    <None Include="Shaders\fFlash.glsl" />
+    <None Include="Shaders\vFlash.glsl" />
   </ItemGroup>
 </Project>

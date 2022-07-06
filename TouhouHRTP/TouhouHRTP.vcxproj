@@ -34,10 +34,10 @@
     <ClInclude Include="Objects\Player.h" />
     <ClInclude Include="Objects\Tile.h" />
     <ClInclude Include="Objects\PlayerBullet.h" />
+    <ClInclude Include="Objects\Rectangle.h" />
     <ClInclude Include="Render\RenderWindow.h" />
     <ClInclude Include="Render\Resources.h" />
     <ClInclude Include="Render\Shader.h" />
-    <ClInclude Include="Render\ShaderList.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -54,15 +54,19 @@
     <ClCompile Include="Objects\Player.cpp" />
     <ClCompile Include="Objects\Tile.cpp" />
     <ClCompile Include="Objects\PlayerBullet.cpp" />
+    <ClCompile Include="Objects\Rectangle.cpp" />
     <ClCompile Include="Render\RenderWindow.cpp" />
     <ClCompile Include="Render\Resources.cpp" />
     <ClCompile Include="Render\Shader.cpp" />
-    <ClCompile Include="Render\ShaderList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\fFlash.glsl" />
     <None Include="Shaders\fScreen.glsl" />
+    <None Include="Shaders\fSparkle.glsl" />
     <None Include="Shaders\fText.glsl" />
+    <None Include="Shaders\vFlash.glsl" />
     <None Include="Shaders\vScreen.glsl" />
+    <None Include="Shaders\vSparkle.glsl" />
     <None Include="Shaders\vSprite.glsl" />
     <None Include="Shaders\vText.glsl" />
   </ItemGroup>

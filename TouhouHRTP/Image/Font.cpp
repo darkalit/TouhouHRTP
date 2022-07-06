@@ -1,7 +1,7 @@
 ﻿#include "Font.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+//#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "stb_truetype.h"
 

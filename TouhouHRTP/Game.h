@@ -4,9 +4,9 @@
 #include "Objects/PlayerBullet.h"
 #include "Objects/Ball.h"
 #include "Objects/Tile.h"
+#include "Objects/Rectangle.h"
 #include "Image/Text.h"
 #include <functional>
-#include <stb_image.h>
 
 class Game
 {
@@ -21,12 +21,11 @@ public:
 	void display		();
 
 private:
-	GLFWwindow*			window_	{};
-	Shader*				screen_	{};
-	RenderWindow*		render_	{};
+	//float32 temp_t_{-2.0f};
+	//Rectangle*			flash_	{};
 
-	std::map<std::string, Texture*>	textures_	{};
-	Shader*				shader_					{};
+	GLFWwindow*			window_	{};
+	RenderWindow*		render_	{};
 
 	Font*	  			font_	{};
 	Text*				text_	{};
@@ -36,8 +35,8 @@ private:
 	std::vector<PlayerBullet*>	player_bullets_	{};
 
 	// screen sizes
-	const int32		win_width_	{1440};//{800};
-	const int32		win_height_ {900};//{500};
+	const int32		win_width_	{1440};//{1440};//{800};
+	const int32		win_height_ {900};//{900};//{500};
 
 	const uint32	scr_width_	{640};
 	const uint32	scr_height_ {400};
@@ -59,6 +58,7 @@ private:
 
 	void update_ball		();
 	void update_player		();
+	void update_tiles		();
 
 	void init_window		();
 	void init_textures		();

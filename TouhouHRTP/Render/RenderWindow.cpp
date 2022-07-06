@@ -1,8 +1,7 @@
 #include "RenderWindow.h"
 
-RenderWindow::RenderWindow(const Shader& shader, const int32& width, const int32& height)
+RenderWindow::RenderWindow(const int32& width, const int32& height)
 	:
-	shader(shader),
 	size(glm::ivec2(width, height))
 {
 	// initialize renderbuffer/framebuffer object
@@ -61,7 +60,7 @@ void RenderWindow::display()
 	//glClear(GL_COLOR_BUFFER_BIT);
 	//glDisable(GL_DEPTH_TEST);
 
-	this->shader.use();
+	Resources::get_shader("screen")->use();
 	glActiveTexture(GL_TEXTURE0);
 	this->texture.bind();
 	

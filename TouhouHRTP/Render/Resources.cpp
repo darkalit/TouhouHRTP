@@ -1,71 +1,39 @@
 #include "Resources.h"
 
-std::map<std::string, Shader*> Resources::shaders;
+std::map<std::string, Shader*> Resources::shaders_;
+std::map<std::string, Texture*> Resources::textures_;
 
-Shader& Resources::loadShader(bool fileFlag, std::string name, const char* vertexSource, const char* fragmentSource, const char* geometrySource)
+Shader* Resources::load_shader(const std::string& name, const char* vertexSource, const char* fragmentSource, const char* geometrySource, const bool& file_f)
 {
-    if (fileFlag)
-        shaders[name] = &loadShaderFromFile(vertexSource, fragmentSource, geometrySource);
+    shaders_[name] = new Shader(vertexSource, fragmentSource, geometrySource, file_f);
+    return shaders_.at(name);
+}
+
+Shader* Resources::get_shader(const std::string& name)
+{
+    return shaders_.at(name);
+}
+
+Texture* Resources::load_texture(const std::string& name, const std::string& path, const bool& bin_f)
+{
+    textures_[name] = new Texture;
+    if (bin_f)
+		textures_.at(name)->texFromBin(path);
     else
-    {
-        Shader shader;
-        shader.compile(vertexSource, fragmentSource, geometrySource);
-        shaders[name] = &shader;
-    }
-    return *shaders[name];
+		textures_.at(name)->texFromImage(path);
+    return textures_.at(name);
 }
 
-Shader& Resources::getShader(std::string name)
+Texture* Resources::get_texture(const std::string& name)
 {
-    return *shaders[name];
+    return textures_.at(name);
 }
 
-Shader& Resources::loadShaderFromFile(const char* vertexSource, const char* fragmentSource, const char* geometrySource)
+void Resources::clear()
 {
-    std::string vShaderCode;
-    std::string fShaderCode;
-    std::string gShaderCode;
-    
-    std::ifstream vShaderFile;
-    std::ifstream fShaderFile;
-    std::ifstream gShaderFile;
-    
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    
-    try {
-    	vShaderFile.open(vertexSource);
-    	fShaderFile.open(fragmentSource);
-    	std::stringstream vShaderStream, fShaderStream;
-    
-    	vShaderStream << vShaderFile.rdbuf();
-    	fShaderStream << fShaderFile.rdbuf();
-    	vShaderFile.close();
-    	fShaderFile.close();
-    
-    	vShaderCode = vShaderStream.str();
-    	fShaderCode = fShaderStream.str();
-    
-    	if (geometrySource != nullptr)
-    	{
-    		gShaderFile.open(geometrySource);
-    		std::stringstream gShaderStream;
-    		gShaderStream << gShaderFile.rdbuf();
-    		gShaderFile.close();
-    		gShaderCode = gShaderStream.str();
-    	}
-    }
-    catch (std::ifstream::failure e)
-    {
-    	std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-    }
+    for (auto& shader : shaders_)
+		delete shader.second;
 
-    const char* vertexCode = vShaderCode.c_str();
-    const char* fragmentCode = fShaderCode.c_str();
-    const char* geometryCode = gShaderCode.c_str();
-
-    Shader shader;
-    shader.compile(vertexCode, fragmentCode, geometrySource != nullptr ? geometryCode : nullptr);
-    return shader;
+    for (auto& texture : textures_)
+		delete texture.second;
 }

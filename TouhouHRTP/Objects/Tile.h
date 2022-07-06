@@ -12,7 +12,7 @@ public:
 		PHASE3
 	};
 
-	Tile	(Texture* texture, const uint32& screen_width, const uint32& screen_height, const State& state);
+	Tile	(const uint32& screen_width, const uint32& screen_height, const State& state);
 	~Tile	() override;
 
 	auto flip		()	-> bool;
@@ -20,7 +20,7 @@ public:
 	auto get_state	()	-> State;
 
 	void update		(const float32& delta_time)	override;
-	void draw		(Shader* shader)			override;
+	void draw		()							override;
 
 private:
 	bool flip_f_	{false};

@@ -1,8 +1,5 @@
 #include "Sprite.h"
 
-//#define STB_IMAGE_IMPLEMENTATION
-//#include "stb_image.h"
-
 Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, const bool& centering)
 	:
 	texture	(texture),
@@ -17,14 +14,14 @@ Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, con
 	loadSprite(centering);
 }
 
-Sprite::Sprite(Texture* texture, const glm::ivec4& rect, const glm::ivec2& customSize, const bool& centering)
+Sprite::Sprite(Texture* texture, const glm::ivec4& rect, const glm::ivec2& screenSize, const bool& centering)
 	:
 	texture	(texture),
 	size(glm::ivec2(texture->width, texture->height)),
 	pos(glm::vec2(0.0f)),
 	rect(rect)
 {
-	this->proj = glm::ortho(0.0f, static_cast<float32>(customSize.x), static_cast<float32>(customSize.y), 0.0f, -1.0f, 1.0f);
+	this->proj = glm::ortho(0.0f, static_cast<float32>(screenSize.x), static_cast<float32>(screenSize.y), 0.0f, -1.0f, 1.0f);
 	this->model = glm::mat4(1.0f);
 	loadSprite(centering);
 }
@@ -45,13 +42,10 @@ void Sprite::loadSprite(const bool& centering)
 			halfx,  halfy, static_cast<float32>(this->rect.z) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.y) / static_cast<float32>(this->size.y),
 			halfx, -halfy, static_cast<float32>(this->rect.z) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.w) / static_cast<float32>(this->size.y)
 		};
-		unsigned int j = 0;
-		for (const auto& i : quad)
-		{
-			quadV[j++] = i;
-		}
+		memcpy(this->quadV, quad, sizeof quad);
 	}		
 	else
+	{
 		float32 quad[] = {
 			// positions													// texcoords
 			0.0f,							0.0f,							1.0f, 0.0f,
@@ -62,6 +56,8 @@ void Sprite::loadSprite(const bool& centering)
 			static_cast<float32>(size.x),	static_cast<float32>(size.y),	1.0f, 0.0f,
 			static_cast<float32>(size.x),	0.0f,							1.0f, 1.0f
 		};
+		memcpy(this->quadV, quad, sizeof quad);
+	}
 
 	glGenBuffers(1, &this->VBO);
 	glGenVertexArrays(1, &this->VAO);

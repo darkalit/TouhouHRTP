@@ -1,5 +1,6 @@
 #pragma once
 #include "../Image/Sprite.h"
+#include "../Render/Resources.h"
 
 class Object
 {
@@ -19,7 +20,7 @@ public:
 	virtual auto check_intersect	(Object& object) -> bool;
 
 	virtual void update	(const float32& delta_time)	= 0;
-	virtual void draw	(Shader* shader)			= 0;
+	virtual void draw	()							= 0;
 
 protected:
 	std::map<std::string, std::vector<Sprite*>> sprites_ {};
@@ -27,13 +28,12 @@ protected:
 	glm::vec2	pos_	{};
 	glm::vec2	scale_	{1.0f, 1.0f};
 	Rect		bounds_	{};
-	float32		angle_	{}; 
+	float32		angle_	{};
 
 	float32		time_			{};
 	uint32		screen_width_	{}, 
 				screen_height_	{};
 	uint32		iter_			{};
-	Texture*	texture_		{};
 
 	virtual void init_textures() = 0;
 };

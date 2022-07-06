@@ -17,7 +17,7 @@ public:
 	Sprite			(Texture* texture, GLFWwindow* window, 
 					 const glm::ivec4& rect, const bool& centering = true);
 	Sprite			(Texture* texture, const glm::ivec4& rect, 
-					 const glm::ivec2& customSize = glm::ivec2(0, 0), 
+					 const glm::ivec2& screenSize = glm::ivec2(0, 0), 
 					 const bool& centering = true);
 	void loadSprite	(const bool& centering = true);
 	void clear		(Shader* shader);
@@ -31,7 +31,7 @@ public:
 	auto getBounds	() -> Rect;
 
 private:
-	glm::mat4	model	{}, 
+	glm::mat4	model	{},
 				proj	{};
 	Texture*	texture	{};
 	glm::ivec2	size	{};

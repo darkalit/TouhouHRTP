@@ -1,24 +1,22 @@
 #include "Text.h"
 
 //#define STB_TRUETYPE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "stb_truetype.h"
-#include "stb_image_write.h"
 #include "../Debug.h"
 
 Text::Text(Font* font, const uint32& screen_width, const uint32& screen_height)
 	:
-	font_(font), shader_(Shader(glsl::vText, glsl::fText, nullptr, true))
+	font_(font)
 {
 	this->win_height_ = static_cast<float32>(screen_height);
 	this->proj_	= glm::ortho(0.0f, 
 		static_cast<float32>(screen_width), 
 		static_cast<float32>(screen_height), 
 		0.0f, -1.0f, 1.0f);
-	shader_.use();
-	shader_.setMat4("projection", this->proj_);
-	shader_.setVec3("textColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	Resources::get_shader("text")->use();
+	Resources::get_shader("text")->setMat4("projection", this->proj_);
+	Resources::get_shader("text")->setVec3("textColor", glm::vec3(1.0f, 1.0f, 1.0f));
 	
 	glGenVertexArrays(1, &this->vao_);
     glGenBuffers(1, &this->vbo_);
@@ -33,8 +31,8 @@ Text::Text(Font* font, const uint32& screen_width, const uint32& screen_height)
 
 void Text::set_color(float32 r, float32 g, float32 b)
 {
-	shader_.use();
-	shader_.setVec3("textColor", glm::vec3(r, g, b));
+	Resources::get_shader("text")->use();
+	Resources::get_shader("text")->setVec3("textColor", glm::vec3(r, g, b));
 }
 
 void Text::set_pos(const float32& x, const float32& y)
@@ -49,7 +47,7 @@ void Text::set_text(const std::string& text)
 
 void Text::draw()
 {
-	shader_.use();
+	Resources::get_shader("text")->use();
 
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

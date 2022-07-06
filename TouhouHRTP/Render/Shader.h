@@ -9,7 +9,6 @@ public:
 
 	Shader	() { this->ID = 0; }
 	Shader	(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr, const bool& fileRead = false);
-	//Shader	(const char* vertexSource)
 	~Shader	();
 
 	void compile	(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr);
