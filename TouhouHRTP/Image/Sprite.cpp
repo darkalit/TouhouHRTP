@@ -3,9 +3,9 @@
 Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, const bool& centering)
 	:
 	texture	(texture),
-	size(glm::ivec2(texture->width, texture->height)),
-	pos(glm::vec2(0.0f)),
-	rect(rect)
+	size	(glm::ivec2(texture->width, texture->height)),
+	pos		(glm::vec2(0.0f)),
+	rect	(rect)
 {
 	int winSizeX, winSizeY;
 	glfwGetFramebufferSize(window, &winSizeX, &winSizeY);
@@ -17,9 +17,9 @@ Sprite::Sprite(Texture* texture, GLFWwindow* window, const glm::ivec4& rect, con
 Sprite::Sprite(Texture* texture, const glm::ivec4& rect, const glm::ivec2& screenSize, const bool& centering)
 	:
 	texture	(texture),
-	size(glm::ivec2(texture->width, texture->height)),
-	pos(glm::vec2(0.0f)),
-	rect(rect)
+	size	(glm::ivec2(texture->width, texture->height)),
+	pos		(glm::vec2(0.0f)),
+	rect	(rect)
 {
 	this->proj = glm::ortho(0.0f, static_cast<float32>(screenSize.x), static_cast<float32>(screenSize.y), 0.0f, -1.0f, 1.0f);
 	this->model = glm::mat4(1.0f);
@@ -46,15 +46,17 @@ void Sprite::loadSprite(const bool& centering)
 	}		
 	else
 	{
+		const float32	x	= static_cast<float32>(this->rect.z - this->rect.x),
+						y	= static_cast<float32>(this->rect.w - this->rect.y);
 		float32 quad[] = {
-			// positions													// texcoords
-			0.0f,							0.0f,							1.0f, 0.0f,
-			0.0f,							static_cast<float32>(size.y),	0.0f, 1.0f,
-			static_cast<float32>(size.x),	static_cast<float32>(size.y),	0.0f, 0.0f,
+			// positions	// texcoords
+			x,		y,		static_cast<float32>(this->rect.z) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.y) / static_cast<float32>(this->size.y),
+			0.0f,	0.0f,	static_cast<float32>(this->rect.x) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.w) / static_cast<float32>(this->size.y),
+			0.0f,	y,		static_cast<float32>(this->rect.x) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.y) / static_cast<float32>(this->size.y),
 
-		    0.0f,							0.0f,							0.0f, 1.0f,
-			static_cast<float32>(size.x),	static_cast<float32>(size.y),	1.0f, 0.0f,
-			static_cast<float32>(size.x),	0.0f,							1.0f, 1.0f
+			0.0f,	0.0f,	static_cast<float32>(this->rect.x) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.w) / static_cast<float32>(this->size.y),
+			x,		y,		static_cast<float32>(this->rect.z) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.y) / static_cast<float32>(this->size.y),
+			x,		0.0f,	static_cast<float32>(this->rect.z) / static_cast<float32>(this->size.x), static_cast<float32>(this->rect.w) / static_cast<float32>(this->size.y)
 		};
 		memcpy(this->quadV, quad, sizeof quad);
 	}
@@ -104,8 +106,8 @@ glm::ivec4 Sprite::getEdges()
 
 glm::vec2 Sprite::getSize()
 {
-	return {	static_cast<float32>(this->rect.z - this->rect.x) / 2.0f, 
-				static_cast<float32>(this->rect.w - this->rect.y) / 2.0f	};
+	return {	static_cast<float32>(this->rect.z - this->rect.x), 
+				static_cast<float32>(this->rect.w - this->rect.y)};
 }
 
 Rect Sprite::getBounds()

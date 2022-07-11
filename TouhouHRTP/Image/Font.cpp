@@ -5,7 +5,7 @@
 
 #include "stb_truetype.h"
 
-Font::Font(const char* file_path)
+Font::Font(const char* file_path, const float32& size)
 {
 	auto* ttf_buffer = new uint8[1 << 20];
 	auto* temp_bitmap = new uint8[512 * 512];
@@ -20,7 +20,7 @@ Font::Font(const char* file_path)
 	else
 		std::cout << "ERROR::TRUETYPE: Failed to open font file" << std::endl;
 		
-	stbtt_BakeFontBitmap(ttf_buffer, 0, 72.0, temp_bitmap, 
+	stbtt_BakeFontBitmap(ttf_buffer, 0, size, temp_bitmap, 
 		512, 512, 32, 96, this->cdata_);
 	
 	// Testing bitmap creation

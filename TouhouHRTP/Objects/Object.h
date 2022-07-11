@@ -1,6 +1,6 @@
 #pragma once
 #include "../Image/Sprite.h"
-#include "../Render/Resources.h"
+#include "../Resources.h"
 
 class Object
 {
@@ -14,16 +14,20 @@ public:
 	virtual void set_scale		(const glm::vec2& scale);
 
 	virtual auto get_pos			() -> glm::vec2;
+	virtual auto get_angle			() -> float32;
 	virtual auto get_edges			() -> glm::ivec4;
 	virtual auto get_bounds			() -> Rect;
 	virtual auto get_size			() -> glm::vec2;
 	virtual auto check_intersect	(Object& object) -> bool;
+	virtual auto check_intersect_ell(Object& object) -> bool;
+	virtual auto check_intersect_circle_rect(Object& object) -> bool;
+	virtual auto check_intersect_circle_circle(Object& object) -> bool;
 
 	virtual void update	(const float32& delta_time)	= 0;
 	virtual void draw	()							= 0;
 
 protected:
-	std::map<std::string, std::vector<Sprite*>> sprites_ {};
+	std::unordered_map<std::string, std::vector<Sprite*>> sprites_ {};
 	Sprite*		temp_	{};
 	glm::vec2	pos_	{};
 	glm::vec2	scale_	{1.0f, 1.0f};

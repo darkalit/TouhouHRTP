@@ -3,7 +3,7 @@
 #include "../Debug.h"
 #include "../Utility.h"
 #include "../Image/Texture.h"
-#include "Resources.h"
+#include "../Resources.h"
 
 
 class RenderWindow

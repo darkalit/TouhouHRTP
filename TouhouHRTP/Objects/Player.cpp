@@ -18,17 +18,16 @@ Player::~Player()
 		delete kv.second;
 }
 
-auto Player::stand	() -> bool
+void Player::stand()
 {
 	this->state_ = Player::State::STAND;
 	this->temp_ = this->sprites_["stand"][0];
-	this->set_pos(this->get_pos().x, this->get_size().y);
+	this->set_pos(this->get_pos().x, this->get_size().y / 2.0f);
 	this->set_scale(glm::vec2(1.0f, 1.0f));
 	this->anim_time_ = 0.0f;
-	return true;
 }
 
-auto Player::run	(const float32& delta_time, const int8& direction) -> bool
+void Player::run(const float32& delta_time, const int8& direction)
 {
 	this->state_ = Player::State::RUN_L * (direction < 0) + Player::State::RUN_R * (direction > 0);
 	this->iter_ %= this->sprites_["run"].size();
@@ -42,15 +41,13 @@ auto Player::run	(const float32& delta_time, const int8& direction) -> bool
 	this->set_pos(this->get_pos().x 
 		+ static_cast<float32>(direction) 
 		* delta_time
-		* this->speed_, this->get_size().y);
+		* this->speed_, this->get_size().y / 2.0f);
 	this->set_scale(glm::vec2(static_cast<float32>(-direction), 1.0f));
 
 	this->anim_time_ = 0.0f;
-
-	return true;
 }
 
-auto Player::attack1(const float32& delta_time) -> bool
+void Player::attack1(const float32& delta_time)
 {
 	constexpr float32 speed_time = 0.5f;
 		
@@ -67,17 +64,15 @@ auto Player::attack1(const float32& delta_time) -> bool
 	this->time_ *= static_cast<float32>(this->time_ < speed_time / static_cast<float32>(2 * this->sprites_["attack1"].size()));
 	this->iter_ += this->time_ == 0.0f;
 
-	this->set_pos(this->get_pos().x, this->get_size().y);
+	this->set_pos(this->get_pos().x, this->get_size().y / 2.0f);
 	this->set_scale(glm::vec2(static_cast<float32>(-!this->flag_ + this->flag_), 1.0f));
 
 	this->anim_time_ += delta_time;
 	if (this->anim_time_ >= speed_time)
 		this->anim_time_ = 0.0f;
-
-	return true;
 }
 
-auto Player::attack2(const float32& delta_time, const int8& direction, const bool& no_stop) -> bool
+void Player::attack2(const float32& delta_time, const int8& direction, const bool& no_stop)
 {
 	constexpr float32 speed_time = 0.8f;
 	this->state_ = !no_stop * (Player::State::ATTACK2_L * (direction < 0) + Player::State::ATTACK2_R * (direction > 0))
@@ -95,7 +90,7 @@ auto Player::attack2(const float32& delta_time, const int8& direction, const boo
 		+ static_cast<float32>(no_stop)
 		* static_cast<float32>(direction) 
 		* delta_time 
-		* 0.4f * this->speed_, this->get_size().y);
+		* 0.4f * this->speed_, this->get_size().y / 2.0f);
 	this->set_scale(glm::vec2(static_cast<float32>(-direction), 1.0f));
 
 	this->anim_time_ += delta_time;
@@ -105,11 +100,9 @@ auto Player::attack2(const float32& delta_time, const int8& direction, const boo
 		//this->new_state_ = Player::State::STAND;
 		this->new_state_ = (State::RUN_L * (direction < 0) + State::RUN_R * (direction > 0));
 	}
-
-	return true;
 }
 
-auto Player::attack3(const float32& delta_time, const int8& direction) -> bool
+void Player::attack3(const float32& delta_time, const int8& direction)
 {
 	this->state_ = Player::State::SLIDE_L_A3 * (direction < 0) + Player::State::SLIDE_R_A3 * (direction > 0);
 
@@ -118,7 +111,7 @@ auto Player::attack3(const float32& delta_time, const int8& direction) -> bool
 	this->set_pos(this->get_pos().x
 		+ static_cast<float32>(direction) 
 		* delta_time 
-		* 1.4f * this->speed_, this->get_size().y);
+		* 1.4f * this->speed_, this->get_size().y / 2.0f);
 	this->set_scale(glm::vec2(static_cast<float32>(-direction), 1.0f));
 
 	this->anim_time_ += delta_time;
@@ -128,10 +121,15 @@ auto Player::attack3(const float32& delta_time, const int8& direction) -> bool
 		//this->new_state_ = Player::State::STAND;
 		this->new_state_ = (State::RUN_L * (direction < 0) + State::RUN_R * (direction > 0));
 	}
-	return true;
 }
 
-auto Player::slide	(const float32& delta_time, const int8& direction) -> bool
+void Player::bomb(const float32& delta_time)
+{
+	std::cout << "boom\n";
+	this->bombs_--;
+}
+
+void Player::slide	(const float32& delta_time, const int8& direction)
 {
 	this->state_ = Player::State::SLIDE_L * (direction < 0) + Player::State::SLIDE_R * (direction > 0);
 	
@@ -146,7 +144,7 @@ auto Player::slide	(const float32& delta_time, const int8& direction) -> bool
 	this->set_pos(this->get_pos().x 
 		+ static_cast<float32>(direction) 
 		* delta_time 
-		* 1.2f * this->speed_, this->get_size().y);
+		* 1.2f * this->speed_, this->get_size().y / 2.0f);
 	this->set_scale(glm::vec2(static_cast<float32>(-direction), 1.0f));
 
 	this->anim_time_ += delta_time;
@@ -156,10 +154,9 @@ auto Player::slide	(const float32& delta_time, const int8& direction) -> bool
 		this->anim_time_ = 0.0f;
 		this->new_state_ = (Player::State::RUN_L * (direction < 0) + Player::State::RUN_R * (direction > 0));
 	}
-	return true;
 }
 
-auto Player::dead(const float32& delta_time) -> bool
+void Player::dead(const float32& delta_time)
 {
 	constexpr float32 time = 1.5f;
 	constexpr float32 k = 350.0f;
@@ -183,13 +180,23 @@ auto Player::dead(const float32& delta_time) -> bool
 
 	if (anim_time_ >= time)
 	{
-		this->set_pos(static_cast<float32>(this->screen_width_) / 2.0f, this->get_size().y);
+		this->set_pos(static_cast<float32>(this->screen_width_) / 2.0f, this->get_size().y / 2.0f);
 		this->invis_ = true;
-		this->invis_time_ = 10.0f;
+		this->invis_time_ = 5.0f;
 		this->anim_time_ = 0.0f;
+		this->hp_ -= this->hp_ > 1;
+		this->bombs_ += this->hp_ > 1;
 	}
+}
 
-	return true;
+auto Player::get_hp() -> uint32
+{
+	return this->hp_;
+}
+
+auto Player::get_bombs() -> uint32
+{
+	return this->bombs_;
 }
 
 auto Player::get_state() -> State
@@ -320,6 +327,10 @@ void Player::update_input(const float32& delta_time)
 		this->attack3(delta_time, -1);
 		break;
 
+	case Player::State::BOMB:
+		this->bomb(delta_time);
+		break;
+
 	default:
 		break;
 	}
@@ -330,10 +341,10 @@ void Player::update(const float32& delta_time)
 	Resources::get_shader("sparkle")->use();
 	Resources::get_shader("sparkle")->setFloat("time", static_cast<float32>(glfwGetTime()));
 
-	if (this->get_pos().x < this->get_size().x + 1.0f)
-		this->set_pos(floor(this->get_size().x + 1.0f), this->get_pos().y);
-	if (this->get_pos().x > static_cast<float32>(this->screen_width_) - this->get_size().x)
-		this->set_pos(floor(static_cast<float32>(this->screen_width_) - this->get_size().x), this->get_pos().y);
+	if (this->get_pos().x < this->get_size().x / 2.0f + 1.0f)
+		this->set_pos(floor(this->get_size().x / 2.0f + 1.0f), this->get_pos().y);
+	if (this->get_pos().x > static_cast<float32>(this->screen_width_) - this->get_size().x / 2.0f)
+		this->set_pos(floor(static_cast<float32>(this->screen_width_) - this->get_size().x / 2.0f), this->get_pos().y);
 	if (this->invis_)
 		this->effects_.at("invis")->set_pos(this->get_pos().x, this->get_pos().y - 2.0f);
 

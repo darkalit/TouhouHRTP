@@ -1,6 +1,6 @@
 #include "Tile.h"
 
-Tile::Tile	(const uint32& screen_width, const uint32& screen_height, const State& state)
+Tile::Tile	(const uint32& screen_width, const uint32& screen_height, const uint8& state)
 {
 	this->screen_width_	 = screen_width;
 	this->screen_height_ = screen_height;
@@ -18,47 +18,57 @@ Tile::~Tile	()
 
 auto Tile::flip			() -> bool
 {
-	return (flip_f_ = true);
+	return (this->flip_f_ = true);
 }
 
 auto Tile::get_state() -> State
 {
-	return static_cast<State>(state_);
+	return static_cast<State>(this->state_);
+}
+
+auto Tile::get_state_change() -> bool
+{
+	return this->state_change_;
 }
 
 void Tile::init_textures	()
 {
 	this->sprites_["0"] = std::vector<Sprite*>
 	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(164, 200, 194, 230), glm::ivec2(this->screen_width_, this->screen_height_))
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 519, 128, 551), glm::ivec2(this->screen_width_, this->screen_height_))
 	};
 	this->sprites_["1"] = std::vector<Sprite*>
 	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 408, 126, 438), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 438, 126, 468), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 468, 126, 498), glm::ivec2(this->screen_width_, this->screen_height_))
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 423, 129, 455), glm::ivec2(this->screen_width_, this->screen_height_)),
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 455, 129, 487), glm::ivec2(this->screen_width_, this->screen_height_)),
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 486, 129, 518), glm::ivec2(this->screen_width_, this->screen_height_))
 	};
 	this->sprites_["2"] = std::vector<Sprite*>
 	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 317, 126, 347), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 347, 126, 377), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 377, 126, 407), glm::ivec2(this->screen_width_, this->screen_height_))
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 328, 129, 360), glm::ivec2(this->screen_width_, this->screen_height_)),
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 360, 129, 392), glm::ivec2(this->screen_width_, this->screen_height_)),
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 391, 129, 423), glm::ivec2(this->screen_width_, this->screen_height_))
 	};
 	this->sprites_["3"] = std::vector<Sprite*>
 	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 226, 126, 256), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 256, 126, 286), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 286, 126, 316), glm::ivec2(this->screen_width_, this->screen_height_))
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 233, 129, 265), glm::ivec2(this->screen_width_, this->screen_height_)),
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 265, 129, 297), glm::ivec2(this->screen_width_, this->screen_height_)),
+		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 296, 129, 328), glm::ivec2(this->screen_width_, this->screen_height_))
 	};
 }
 
 void Tile::update		(const float32& delta_time)
 {
+	this->temp_state_ = this->state_;
+	this->state_change_ = false;
 	if (this->flip_f_) 
 	{
 		this->state_ -= this->state_ > 0 && this->iter_ >= this->sprites_.at(std::to_string(this->state_)).size();
 		this->flip_f_ = (this->state_ > 0) && (this->iter_ < this->sprites_.at(std::to_string(this->state_)).size());
 		this->iter_ *= this->iter_ < this->sprites_.at(std::to_string(this->state_)).size();
+
+		if (this->temp_state_ != this->state_)
+			this->state_change_ = true;
 
 		this->temp_ = this->sprites_[std::to_string(this->state_)][iter_];
 		this->time_++;

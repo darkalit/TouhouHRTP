@@ -3,10 +3,11 @@
 #include "Objects/Player.h"
 #include "Objects/PlayerBullet.h"
 #include "Objects/Ball.h"
-#include "Objects/Tile.h"
-#include "Objects/Rectangle.h"
+#include "Level_manager.h"
 #include "Image/Text.h"
 #include <functional>
+#include <any>
+#include <random>
 
 class Game
 {
@@ -23,24 +24,52 @@ public:
 private:
 	//float32 temp_t_{-2.0f};
 	//Rectangle*			flash_	{};
+	std::random_device	rd_;
 
 	GLFWwindow*			window_	{};
 	RenderWindow*		render_	{};
 
-	Font*	  			font_	{};
-	Text*				text_	{};
+	Font*	  			font16_		{};
+	Text*				text_		{};
+
+	float32				upper_bound_{};
+	std::unordered_map<uint32*, glm::vec2> text_pos_;
+
+	float32				bullet_flurry_timer_	{0.0f};
+
+	bool				timeout_	{false};
+	float32				time_		{1000.0f};
+	uint32				stage_		{1};
+	uint32				score_		{};
+	uint32				hi_score_	{1000};
+	uint32				mult_		{1};
+	uint32				hi_mult_	{10};
+
+	glm::vec2			diffic_pos_	{};
+	glm::vec2			time_pos_	{};
+
+	//uint32				player_hp_		{4};
+	//uint32				player_bombs_	{1};
+
 	Player*				reimu_	{};
 	Ball*				ball_	{};
-	std::vector<Tile*>	tiles_	{};
-	std::vector<PlayerBullet*>	player_bullets_	{};
+	Sprite*				inter_	{};
+	Sprite*				bomb_	{};
+	Sprite*				hp_		{};
+
+	Level_manager::Level_objects	lvl_objs_		{};
+	std::vector<PlayerBullet*>		player_bullets_	{};
+	std::vector<EnemyBullet*>		enemy_bullets_	{};
 
 	// screen sizes
-	const int32		win_width_	{1440};//{1440};//{800};
-	const int32		win_height_ {900};//{900};//{500};
+	const int32		win_width_	{1440}; //{1440};//{800};
+	const int32		win_height_ {900};	//{900};//{500};
 
 	const uint32	scr_width_	{640};
 	const uint32	scr_height_ {400};
 
+	const float32	k_width_	{static_cast<float32>(this->win_width_) / static_cast<float32>(this->scr_width_)};
+	const float32	k_height_	{static_cast<float32>(this->win_height_) / static_cast<float32>(this->scr_height_)};
 	const char*		title_		{"TOUHOU"};
 
 	// frametime vars
@@ -53,14 +82,18 @@ private:
 	float32 pixel_size_		{1.0f};
 
 	bool	polygon_flag_	{true};
+	bool	pause_			{false};
 	bool	runtime_flag_	{true};
-	std::map<uint16, std::array<bool, 2>> keys_ {};
+	std::unordered_map<uint16, std::array<bool, 2>> keys_ {};
 
+	void update_enemies		();
 	void update_ball		();
 	void update_player		();
 	void update_tiles		();
+	void draw_text			();
 
 	void init_window		();
+	void init_text			();
 	void init_textures		();
 	void init_objects		();
 

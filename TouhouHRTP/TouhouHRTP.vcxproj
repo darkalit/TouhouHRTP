@@ -22,6 +22,10 @@
     <ClInclude Include="..\vendor\stb_image.h" />
     <ClInclude Include="..\vendor\stb_image_write.h" />
     <ClInclude Include="..\vendor\stb_truetype.h" />
+    <ClInclude Include="Objects\EnemyBullet.h" />
+    <ClInclude Include="Level_manager.h" />
+    <ClInclude Include="Objects\Ball_tp.h" />
+    <ClInclude Include="Objects\Bumper.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="headers.h" />
@@ -35,13 +39,20 @@
     <ClInclude Include="Objects\Tile.h" />
     <ClInclude Include="Objects\PlayerBullet.h" />
     <ClInclude Include="Objects\Rectangle.h" />
+    <ClInclude Include="Objects\Rail.h" />
     <ClInclude Include="Render\RenderWindow.h" />
-    <ClInclude Include="Render\Resources.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="Render\Shader.h" />
+    <ClInclude Include="Objects\Turret.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\vendor\glad\glad.c" />
+    <ClCompile Include="Objects\EnemyBullet.cpp" />
+    <ClCompile Include="Level_manager.cpp" />
+    <ClCompile Include="Objects\Ball_tp.cpp" />
+    <ClCompile Include="Objects\Bumper.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Image\Font.cpp" />
@@ -55,9 +66,11 @@
     <ClCompile Include="Objects\Tile.cpp" />
     <ClCompile Include="Objects\PlayerBullet.cpp" />
     <ClCompile Include="Objects\Rectangle.cpp" />
+    <ClCompile Include="Objects\Rail.cpp" />
     <ClCompile Include="Render\RenderWindow.cpp" />
-    <ClCompile Include="Render\Resources.cpp" />
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Render\Shader.cpp" />
+    <ClCompile Include="Objects\Turret.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fFlash.glsl" />

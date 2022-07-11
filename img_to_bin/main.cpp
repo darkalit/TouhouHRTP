@@ -53,25 +53,22 @@ int main(int argc, char* argv[])
 
 		return 0;
 	}
-	else 
+	if (!strcmp(argv[1], "-f"))
 	{
-		if (!strcmp(argv[1], "-f"))
-		{
-			if (argv[2] == nullptr)
-				print_usage();
-			else
-				write_bin(argv[2]);
-
-			return 0;
-		}
-
-		if (!strcmp(argv[1], "-h"))
-		{
+		if (argv[2] == nullptr)
 			print_usage();
+		else
+			write_bin(argv[2]);
 
-			return 0;
-		}
-	}			
+		return 0;
+	}
+
+	if (!strcmp(argv[1], "-h"))
+	{
+		print_usage();
+
+		return 0;
+	}		
 
 	return 0;
 }

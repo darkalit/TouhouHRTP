@@ -7,15 +7,19 @@ public:
 	Ball			(const uint32& screen_width, const uint32& screen_height);
 	~Ball			() override;
 	
-	auto fall		(const float32& delta_time)	-> bool;
+	void fall		(const float32& delta_time);
 	auto get_vel	()							->glm::vec2;
 	void set_vel	(const float32& x_vel, const float32& y_vel);
+	void set_upper_bound (const float32& upper_bound);
+	void reflectx	();
+	void reflecty	();
 
 	void update		(const float32& delta_time)	override;
 	void draw		()							override;
 
 private:
-	float32 gravity_	{-900.0f}, 
+	float32	upper_b_	{0.0f},
+			gravity_	{-900.0f}, 
 			y_vel_		{0.0f}, 
 			x_vel_		{10.0f}, 
 			e_loss_		{0.8f};

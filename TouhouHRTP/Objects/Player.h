@@ -14,19 +14,23 @@ public:
 		SLIDE_R_A3,	SLIDE_L_A3,
 		ATTACK1,
 		ATTACK2_R,	ATTACK2_L,
+		BOMB,
 		DEAD
 	};
 
 	Player	(const uint32& screen_width, const uint32& screen_height);
 	~Player	() override;
 
-	auto stand			()							-> bool;
-	auto run			(const float32& delta_time, const int8& direction)	-> bool;
-	auto attack1		(const float32& delta_time)	-> bool;
-	auto attack2		(const float32& delta_time, const int8& direction, const bool& no_stop)	-> bool;
-	auto attack3		(const float32& delta_time, const int8& direction)	-> bool;
-	auto slide			(const float32& delta_time, const int8& direction)	-> bool;
-	auto dead			(const float32& delta_time)	-> bool;
+	void stand			();
+	void run			(const float32& delta_time, const int8& direction);
+	void attack1		(const float32& delta_time);
+	void attack2		(const float32& delta_time, const int8& direction, const bool& no_stop);
+	void attack3		(const float32& delta_time, const int8& direction);
+	void bomb			(const float32& delta_time);
+	void slide			(const float32& delta_time, const int8& direction);
+	void dead			(const float32& delta_time);
+	auto get_hp			()							-> uint32;
+	auto get_bombs		()							-> uint32;
 	auto get_state		()							-> State;
 	auto get_invis		()							-> bool;
 	void set_state		(const State& state);
@@ -40,6 +44,8 @@ public:
 private:
 	bool		flag_			{true};
 	bool		invis_			{false};
+	uint32		hp_				{4};
+	uint32		bombs_			{1};
 	float32		speed_			{270.0f};
 	float32		anim_time_		{0.0f};
 	float32		invis_time_		{0.0f};
