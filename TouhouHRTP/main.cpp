@@ -1,6 +1,6 @@
 #include "Game.h"
 
-int main(int argc, char** argv)
+auto main(int argc, char** argv) -> int32
 {
 	auto* game = new Game;
 	
@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-int WinMain(int argc, char** argv) 
+auto WinMain(int argc, char** argv) -> int32
 {
 	main(argc, argv);
 }

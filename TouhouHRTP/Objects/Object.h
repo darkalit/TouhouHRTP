@@ -1,4 +1,5 @@
 #pragma once
+#include "../utility.h"
 #include "../Image/Sprite.h"
 #include "../Resources.h"
 
@@ -27,7 +28,7 @@ public:
 	virtual void draw	()							= 0;
 
 protected:
-	std::unordered_map<std::string, std::vector<Sprite*>> sprites_ {};
+	//std::unordered_map<std::string, std::vector<Sprite*>> sprites_ {};
 	Sprite*		temp_	{};
 	glm::vec2	pos_	{};
 	glm::vec2	scale_	{1.0f, 1.0f};
@@ -38,7 +39,5 @@ protected:
 	uint32		screen_width_	{}, 
 				screen_height_	{};
 	uint32		iter_			{};
-
-	virtual void init_textures() = 0;
 };
 

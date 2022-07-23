@@ -114,6 +114,15 @@
     <ClInclude Include="Objects\EnemyBullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Bonus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -185,6 +194,12 @@
     <ClCompile Include="Objects\EnemyBullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Bonus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vSprite.glsl" />
@@ -196,5 +211,6 @@
     <None Include="Shaders\vSparkle.glsl" />
     <None Include="Shaders\fFlash.glsl" />
     <None Include="Shaders\vFlash.glsl" />
+    <None Include="Shaders\fSprite.glsl" />
   </ItemGroup>
 </Project>

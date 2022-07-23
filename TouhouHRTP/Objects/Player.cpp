@@ -5,34 +5,33 @@ Player::Player(const uint32& screen_width, const uint32& screen_height)
 {
 	this->screen_width_ = screen_width;
 	this->screen_height_ = screen_height;
-	this->Player::init_textures();
-	this->temp_ = this->sprites_["stand"][0];
+	this->effects_["death1"]	= new Rectangle(glm::ivec2(40, 40), glm::ivec2(this->screen_width_, this->screen_height_));
+	this->effects_["death2"]	= new Rectangle(glm::ivec2(40, 40), glm::ivec2(this->screen_width_, this->screen_height_));
+	this->effects_["invis"]		= new Rectangle(glm::ivec2(40, 40), glm::ivec2(this->screen_width_, this->screen_height_));
+	this->temp_ = Resources::get_sprites("PStand")[0];
 }
 
 Player::~Player()
 {
-	for (auto& kv : this->sprites_)
-		for (auto sprite : kv.second)
-			delete sprite;
 	for (auto& kv : this->effects_)
 		delete kv.second;
 }
 
 void Player::stand()
 {
-	this->state_ = Player::State::STAND;
-	this->temp_ = this->sprites_["stand"][0];
+	this->state_ = STAND;
+	this->temp_ = Resources::get_sprites("PStand")[0];
 	this->set_pos(this->get_pos().x, this->get_size().y / 2.0f);
-	this->set_scale(glm::vec2(1.0f, 1.0f));
+	this->set_scale(glm::vec2(1.0f));
 	this->anim_time_ = 0.0f;
 }
 
 void Player::run(const float32& delta_time, const int8& direction)
 {
-	this->state_ = Player::State::RUN_L * (direction < 0) + Player::State::RUN_R * (direction > 0);
-	this->iter_ %= this->sprites_["run"].size();
+	this->state_ = RUN_L * (direction < 0) + RUN_R * (direction > 0);
+	this->iter_ %= Resources::get_sprites("PRun").size();
 
-	this->temp_ = this->sprites_["run"][iter_];
+	this->temp_ = Resources::get_sprites("PRun")[this->iter_];
 	this->time_ += delta_time;
 	
 	this->time_ *= static_cast<float32>(this->time_ < 0.1f);
@@ -51,17 +50,17 @@ void Player::attack1(const float32& delta_time)
 {
 	constexpr float32 speed_time = 0.5f;
 		
-	this->state_ = Player::State::ATTACK1;
+	this->state_ = ATTACK1;
 
-	if (this->iter_ == this->sprites_["attack1"].size())
+	if (this->iter_ == Resources::get_sprites("PAttack1").size())
 		this->flag_ = !this->flag_;
 
-	this->iter_ %= this->sprites_["attack1"].size();
+	this->iter_ %= Resources::get_sprites("PAttack1").size();
 
-	this->temp_ = this->sprites_["attack1"][this->iter_];
+	this->temp_ = Resources::get_sprites("PAttack1")[this->iter_];
 	this->time_ += delta_time;
 	
-	this->time_ *= static_cast<float32>(this->time_ < speed_time / static_cast<float32>(2 * this->sprites_["attack1"].size()));
+	this->time_ *= static_cast<float32>(this->time_ < speed_time / static_cast<float32>(2 * Resources::get_sprites("PAttack1").size()));
 	this->iter_ += this->time_ == 0.0f;
 
 	this->set_pos(this->get_pos().x, this->get_size().y / 2.0f);
@@ -75,15 +74,15 @@ void Player::attack1(const float32& delta_time)
 void Player::attack2(const float32& delta_time, const int8& direction, const bool& no_stop)
 {
 	constexpr float32 speed_time = 0.8f;
-	this->state_ = !no_stop * (Player::State::ATTACK2_L * (direction < 0) + Player::State::ATTACK2_R * (direction > 0))
-		+ no_stop * (Player::State::SLIDE_L_A2 * (direction < 0) + Player::State::SLIDE_R_A2 * (direction > 0));
+	this->state_ = !no_stop * (ATTACK2_L * (direction < 0) + ATTACK2_R * (direction > 0))
+		+ no_stop * (SLIDE_L_A2 * (direction < 0) + SLIDE_R_A2 * (direction > 0));
 
-	this->iter_ %= this->sprites_.at("attack2").size();
+	this->iter_ %= Resources::get_sprites("PAttack2").size();
 
-	this->temp_ = this->sprites_.at("attack2")[this->iter_];
+	this->temp_ = Resources::get_sprites("PAttack2")[this->iter_];
 	this->time_ += delta_time;
 
-	this->time_ *= static_cast<float32>(this->time_ < speed_time / static_cast<float32>(this->sprites_["attack2"].size()));
+	this->time_ *= static_cast<float32>(this->time_ < speed_time / static_cast<float32>(Resources::get_sprites("PAttack2").size()));
 	this->iter_ += this->time_ == 0.0f;
 	
 	this->set_pos(this->get_pos().x 
@@ -98,15 +97,15 @@ void Player::attack2(const float32& delta_time, const int8& direction, const boo
 	{
 		this->anim_time_ = 0.0f;
 		//this->new_state_ = Player::State::STAND;
-		this->new_state_ = (State::RUN_L * (direction < 0) + State::RUN_R * (direction > 0));
+		this->new_state_ = (RUN_L * (direction < 0) + RUN_R * (direction > 0));
 	}
 }
 
 void Player::attack3(const float32& delta_time, const int8& direction)
 {
-	this->state_ = Player::State::SLIDE_L_A3 * (direction < 0) + Player::State::SLIDE_R_A3 * (direction > 0);
+	this->state_ = SLIDE_L_A3 * (direction < 0) + SLIDE_R_A3 * (direction > 0);
 
-	this->temp_ = this->sprites_["attack3"][0];
+	this->temp_ = Resources::get_sprites("PAttack3")[0];
 
 	this->set_pos(this->get_pos().x
 		+ static_cast<float32>(direction) 
@@ -118,24 +117,48 @@ void Player::attack3(const float32& delta_time, const int8& direction)
 	if (anim_time_ >= 0.4f)
 	{
 		this->anim_time_ = 0.0f;
-		//this->new_state_ = Player::State::STAND;
 		this->new_state_ = (State::RUN_L * (direction < 0) + State::RUN_R * (direction > 0));
 	}
 }
 
 void Player::bomb(const float32& delta_time)
 {
-	std::cout << "boom\n";
-	this->bombs_--;
+	this->state_ = BOMB;
+
+	this->iter_ %= Resources::get_sprites("boom").size();
+	this->temp_ = Resources::get_sprites("PStand")[0];
+	this->temp_boom_ = Resources::get_sprites("boom")[this->iter_];
+	this->time_ += delta_time;
+
+	this->time_ *= static_cast<float32>(this->time_ < 0.2f);
+	this->iter_ += this->time_ == 0.0f;
+
+	this->anim_time_ += delta_time;
+
+	Resources::get_shader("screen")->use();
+	Resources::get_shader("screen")->setBool("shake", true);
+	Resources::get_shader("screen")->setFloat("time", static_cast<float32>(glfwGetTime()));
+
+	this->invis_ = true;
+	if (anim_time_ >= 1.22f)
+	{
+		this->anim_time_ = 0.0f;
+		this->new_state_ = STAND;
+		this->bombs--;
+		if (invis_time_ <= 0.0f)
+			this->invis_ = false;
+		Resources::get_shader("screen")->use();
+		Resources::get_shader("screen")->setBool("shake", false);
+	}
 }
 
 void Player::slide	(const float32& delta_time, const int8& direction)
 {
-	this->state_ = Player::State::SLIDE_L * (direction < 0) + Player::State::SLIDE_R * (direction > 0);
+	this->state_ = SLIDE_L * (direction < 0) + SLIDE_R * (direction > 0);
 	
-	this->iter_ %= this->sprites_["slide"].size();
+	this->iter_ %= Resources::get_sprites("PSlide").size();
 
-	this->temp_ = this->sprites_["slide"][iter_];
+	this->temp_ = Resources::get_sprites("PSlide")[this->iter_];
 	this->time_ += delta_time;
 
 	this->time_ *= static_cast<float32>(this->time_ < 0.1f);
@@ -152,7 +175,7 @@ void Player::slide	(const float32& delta_time, const int8& direction)
 	if (anim_time_ >= 0.22f)
 	{
 		this->anim_time_ = 0.0f;
-		this->new_state_ = (Player::State::RUN_L * (direction < 0) + Player::State::RUN_R * (direction > 0));
+		this->new_state_ = (RUN_L * (direction < 0) + RUN_R * (direction > 0));
 	}
 }
 
@@ -162,9 +185,9 @@ void Player::dead(const float32& delta_time)
 	constexpr float32 k = 350.0f;
 	if (this->anim_time_ >= time)
 		this->anim_time_ = 0.0f;
-	this->state_ = Player::State::DEAD;
+	this->state_ = DEAD;
 
-	this->temp_ = this->sprites_["dead"][0];
+	this->temp_ = Resources::get_sprites("PDead")[0];
 	this->anim_time_ += delta_time;
 	
 	this->effects_.at("death1")->set_pos(
@@ -178,25 +201,21 @@ void Player::dead(const float32& delta_time)
 		- this->anim_time_ * k * time
 		+ this->get_pos().x, floor(this->get_pos().y));
 
+	Resources::get_shader("screen")->use();
+	Resources::get_shader("screen")->setBool("shake", true);
+	Resources::get_shader("screen")->setFloat("time", static_cast<float32>(glfwGetTime()));
+
 	if (anim_time_ >= time)
 	{
 		this->set_pos(static_cast<float32>(this->screen_width_) / 2.0f, this->get_size().y / 2.0f);
 		this->invis_ = true;
-		this->invis_time_ = 5.0f;
+		this->invis_time_ = 2.0f;
 		this->anim_time_ = 0.0f;
-		this->hp_ -= this->hp_ > 1;
-		this->bombs_ += this->hp_ > 1;
+		this->hp -= this->hp > 0;
+		this->bombs += this->hp > 0;
+		Resources::get_shader("screen")->use();
+		Resources::get_shader("screen")->setBool("shake", false);
 	}
-}
-
-auto Player::get_hp() -> uint32
-{
-	return this->hp_;
-}
-
-auto Player::get_bombs() -> uint32
-{
-	return this->bombs_;
 }
 
 auto Player::get_state() -> State
@@ -219,50 +238,24 @@ void Player::set_old_state(const State& state)
 	this->state_ = state;
 }
 
-void Player::init_textures()
+void Player::set_speed(const float32& speed)
 {
-	this->sprites_["stand"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(7, 0, 28, 34),		glm::ivec2(screen_width_, screen_height_)) 
-	};
-	this->sprites_["run"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(66, 0, 96, 34),		glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(98, 0, 128, 34),		glm::ivec2(screen_width_, screen_height_)) 
-	};
-	this->sprites_["attack1"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(4, 86, 46, 128),		glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(48, 86, 90, 128),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(90, 86, 132, 128),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(134, 86, 176, 128),	glm::ivec2(screen_width_, screen_height_))
-	};
-	this->sprites_["attack2"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(1, 36, 49, 84),		glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(52, 36, 100, 84),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(103, 36, 151, 84),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(152, 36, 200, 84),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(203, 36, 251, 84),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(254, 36, 302, 84),	glm::ivec2(screen_width_, screen_height_))
-	};
-	this->sprites_["attack3"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(262, 0, 310, 33),	glm::ivec2(screen_width_, screen_height_))
-	};
-	this->sprites_["slide"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(162, 0, 210, 33),	glm::ivec2(screen_width_, screen_height_)),
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(212, 0, 260, 33),	glm::ivec2(screen_width_, screen_height_))
-	};
-	this->sprites_["dead"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("reimu"), glm::ivec4(2, 212, 32, 242),	glm::ivec2(screen_width_, screen_height_))
-	};
+	this->speed_ = speed;
+}
 
-	this->effects_["death1"]	= new Rectangle(glm::ivec2(40, 40), glm::ivec2(this->screen_width_, this->screen_height_));
-	this->effects_["death2"]	= new Rectangle(glm::ivec2(40, 40), glm::ivec2(this->screen_width_, this->screen_height_));
-	this->effects_["invis"]	= new Rectangle(glm::ivec2(40, 40), glm::ivec2(this->screen_width_, this->screen_height_));
+void Player::reset()
+{
+	this->flag_ = true;
+	this->invis_ = false;
+	this->hp = 4;
+	this->bombs = 1;
+	this->rf_time_ = 0.0f;
+	this->anim_time_ = 0.0f;
+	this->invis_time_ = 0.0f;
+	this->state_ = STAND;
+	this->new_state_ = STAND;
+	this->iter_ = 0.0f;
+	this->time_ = 0.0f;
 }
 
 void Player::update_input(const float32& delta_time)
@@ -275,59 +268,59 @@ void Player::update_input(const float32& delta_time)
 	
 	switch (this->state_)
 	{
-	case Player::State::DEAD:
+	case DEAD:
 		this->dead(delta_time);
 		break;
 
-	case Player::State::STAND:
+	case STAND:
 		this->stand();
 		break;
 
-	case Player::State::RUN_R:
+	case RUN_R:
 		this->run(delta_time, 1);
 		break;
 
-	case Player::State::RUN_L:
+	case RUN_L:
 		this->run(delta_time, -1);
 		break;
 
-	case Player::State::ATTACK1:
+	case ATTACK1:
 		this->attack1(delta_time);
 		break;
 
-	case Player::State::ATTACK2_R:
+	case ATTACK2_R:
 		this->attack2(delta_time, 1, false);
 		break;
 
-	case Player::State::ATTACK2_L:
+	case ATTACK2_L:
 		this->attack2(delta_time, -1, false);
 		break;
 
-	case Player::State::SLIDE_R:
+	case SLIDE_R:
 		this->slide(delta_time, 1);
 		break;
 
-	case Player::State::SLIDE_L:
+	case SLIDE_L:
 		this->slide(delta_time, -1);
 		break;
 
-	case Player::State::SLIDE_R_A2:
+	case SLIDE_R_A2:
 		this->attack2(delta_time, 1, true);
 		break;
 
-	case Player::State::SLIDE_L_A2:
+	case SLIDE_L_A2:
 		this->attack2(delta_time, -1, true);
 		break;
 
-	case Player::State::SLIDE_R_A3:
+	case SLIDE_R_A3:
 		this->attack3(delta_time, 1);
 		break;
 		
-	case Player::State::SLIDE_L_A3:
+	case SLIDE_L_A3:
 		this->attack3(delta_time, -1);
 		break;
 
-	case Player::State::BOMB:
+	case BOMB:
 		this->bomb(delta_time);
 		break;
 
@@ -362,12 +355,16 @@ void Player::draw()
 		this->effects_.at("invis")->draw(Resources::get_shader("sparkle"));
 	}
 
-	if (this->state_ == Player::State::DEAD)
+	if (this->state_ == DEAD)
 	{
 		Resources::get_shader("sparkle")->use();
 		Resources::get_shader("sparkle")->setVec3("uCol", glm::vec3(1.0f, 0.0f, 0.0f));
 		Resources::get_shader("sparkle")->setFloat("range", 2.0f);
 		this->effects_.at("death1")->draw(Resources::get_shader("sparkle"));
 		this->effects_.at("death2")->draw(Resources::get_shader("sparkle"));
+	}
+	if (this->state_ == BOMB)
+	{
+		this->temp_boom_->draw(Resources::get_shader("sprite"), glm::vec2(0.0f));
 	}
 }

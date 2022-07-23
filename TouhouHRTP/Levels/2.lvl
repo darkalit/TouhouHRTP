@@ -1,0 +1,64 @@
+//
+//	All level objects are arranged in form of grid 20x8
+//	[0, 0] - is an element in left top corner, below the game interface without any offsets
+//	[19, 7] - is an element in right bottom corner, slightly higher than bottom of the screen
+//
+
+[BACKGROUND]
+// Stage 1-4 - 0,
+// Makai route stage 6-9 - 1, Jigoku route stage 6-9 - 2,
+// Makai route stage 11-14 - 3, Jigoku route stage 11-14 - 4,
+// Makai route stage 16-19 - 5, Jigoku route stage 16-19 - 6
+// Next number replaces previous
+0
+
+[TILES]
+// x pos, y pos, hp, skin (0 - red, 1 - blue, 2 - purple)
+1, 5, 1, 0
+3, 5, 1, 0
+5, 5, 1, 0
+8, 5, 1, 0
+9, 5, 1, 0
+10, 5, 1, 0
+11, 5, 1, 0
+14, 5, 1, 0
+16, 5, 1, 0
+18, 5, 1, 0
+0, 4, 1, 0
+2, 4, 1, 0
+4, 4, 1, 0
+6, 4, 1, 0
+9, 4, 1, 0
+10, 4, 1, 0
+13, 4, 1, 0
+15, 4, 1, 0
+17, 4, 1, 0
+19, 4, 1, 0
+1, 3, 1, 0
+3, 3, 1, 0
+5, 3, 1, 0
+14, 3, 1, 0
+16, 3, 1, 0
+18, 3, 1, 0
+1, 2, 1, 0
+3, 2, 1, 0
+5, 2, 1, 0
+14, 2, 1, 0
+16, 2, 1, 0
+18, 2, 1, 0
+
+[BUMPERS]
+// x pos, y pos
+9, 2
+10, 2
+
+[RAILS]
+// x pos, y pos, 
+// displacement (0 - under, 1 - centered, 2 - above; if vertical, then 0 - left, 2 - right), 
+// is vertical? (0 - no, 1 - yes)
+
+[TELEPORTERS]
+// x pos, y pos
+
+[TURRETS]
+// x pos, y pos, bullets count

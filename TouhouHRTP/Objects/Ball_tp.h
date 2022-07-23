@@ -4,7 +4,7 @@ class Ball_tp : public Object
 {
 public:
 	Ball_tp		(const uint32& screen_width, const uint32& screen_height);
-	~Ball_tp	() override;
+	~Ball_tp	() override {}
 
 	auto tp_ready	() -> bool;
 	void teleport	(Object& object, Ball_tp& ball_tp);
@@ -15,6 +15,5 @@ public:
 private:
 	bool tp_flag_ {true};
 	float32 anim_time_ {0.0f};
-	void init_textures() override;
 };
 

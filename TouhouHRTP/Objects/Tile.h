@@ -4,30 +4,26 @@
 class Tile : public Object 
 {
 public:
-	enum State
-	{
-		DEAD,
-		PHASE1,
-		PHASE2,
-		PHASE3
-	};
+	Tile	(const uint32& screen_width, const uint32& screen_height, const uint8& hp, const uint8& skin);
+	~Tile	() override {}
 
-	Tile	(const uint32& screen_width, const uint32& screen_height, const uint8& state);
-	~Tile	() override;
+	uint8	hp			{};
+	bool	play_s_f	{true};
 
-	auto flip		()	-> bool;
-	auto get_state	()	-> State;
-	auto get_state_change	()	-> bool;
+	auto flip			()	-> bool;
+	auto get_starting	()	-> bool;
+	auto get_hp_change	()	-> bool;
 
+	void reset		();
 	void update		(const float32& delta_time)	override;
 	void draw		()							override;
 
 private:
-	bool flip_f_		{false};
-	bool state_change_	{false};
-	uint8 temp_state_	{};
-	uint8 state_		{};
-
-	void init_textures() override;
+	bool	start_f_		{true};
+	bool	flip_f_			{false};
+	bool	hp_change_		{false};
+	uint8	skin_			{};
+	uint8	temp_hp_		{};
+	uint8	initial_hp_		{};
 };
 

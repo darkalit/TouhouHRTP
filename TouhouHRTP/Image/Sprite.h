@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Render/RenderWindow.h"
+#include "../Image/Texture.h"
 #include "../Render/Shader.h"
 
 struct Rect

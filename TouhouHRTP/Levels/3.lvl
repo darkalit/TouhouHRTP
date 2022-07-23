@@ -1,0 +1,54 @@
+//
+//	All level objects are arranged in form of grid 20x8
+//	[0, 0] - is an element in left top corner, below the game interface without any offsets
+//	[19, 7] - is an element in right bottom corner, slightly higher than bottom of the screen
+//
+
+[BACKGROUND]
+// Stage 1-4 - 0,
+// Makai route stage 6-9 - 1, Jigoku route stage 6-9 - 2,
+// Makai route stage 11-14 - 3, Jigoku route stage 11-14 - 4,
+// Makai route stage 16-19 - 5, Jigoku route stage 16-19 - 6
+// Next number replaces previous
+2
+
+[TILES]
+// x pos, y pos, hp, skin (0 - red, 1 - blue, 2 - purple)
+7, 4, 3, 1
+8, 4, 3, 1
+9, 4, 3, 1
+10, 4, 3, 1
+11, 4, 3, 1
+12, 4, 3, 1
+
+7, 3, 2, 0
+8, 3, 2, 0
+9, 3, 2, 0
+10, 3, 2, 0
+11, 3, 2, 0
+12, 3, 2, 0
+
+[BUMPERS]
+// x pos, y pos
+15, 0
+19, 0
+15, 3
+19, 3
+
+[RAILS]
+// x pos, y pos, 
+// displacement (0 - under, 1 - centered, 2 - above; if vertical, then 0 - left, 2 - right), 
+// is vertical? (0 - no, 1 - yes)
+
+ 7, 5, 2, 0
+ 8, 5, 2, 0
+ 9, 5, 2, 0
+10, 5, 2, 0
+11, 5, 2, 0
+12, 5, 2, 0
+
+[TELEPORTERS]
+// x pos, y pos
+
+[TURRETS]
+// x pos, y pos, ???

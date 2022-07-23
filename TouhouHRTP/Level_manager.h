@@ -20,6 +20,7 @@ public:
 		float32					tile_size	{};
 		uint32					scr_width	{};
 		uint32					scr_height	{};
+		uint8					bg_num		{};
 	};
 
 	static void load	(Level_objects& arg, const char* file);

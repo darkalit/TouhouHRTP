@@ -4,12 +4,12 @@ class PlayerBullet : public Object
 {
 public:
 	PlayerBullet(const glm::vec2& pos, const uint32& screen_width, const uint32& screen_height);
-	~PlayerBullet() override;
+	~PlayerBullet() override {}
 
+	Sprite* get_temp ();
 	void update	(const float32& deltaTime)	override;
 	void draw	()							override;
 
 private:
-	void init_textures() override;
 };
 

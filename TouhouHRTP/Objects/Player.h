@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Rectangle.h"
+#include "PlayerBullet.h"
 
 class Player : public Object
 {
@@ -21,6 +22,9 @@ public:
 	Player	(const uint32& screen_width, const uint32& screen_height);
 	~Player	() override;
 
+	uint32		hp		{4};
+	uint32		bombs	{1};
+
 	void stand			();
 	void run			(const float32& delta_time, const int8& direction);
 	void attack1		(const float32& delta_time);
@@ -29,13 +33,13 @@ public:
 	void bomb			(const float32& delta_time);
 	void slide			(const float32& delta_time, const int8& direction);
 	void dead			(const float32& delta_time);
-	auto get_hp			()							-> uint32;
-	auto get_bombs		()							-> uint32;
 	auto get_state		()							-> State;
 	auto get_invis		()							-> bool;
 	void set_state		(const State& state);
 	void set_old_state	(const State& state);
-	
+	void set_speed		(const float32& speed);
+
+	void reset			();
 	void update_input	(const float32& delta_time);
 	void update			(const float32& delta_time)	override;
 	void draw			()							override;
@@ -44,16 +48,15 @@ public:
 private:
 	bool		flag_			{true};
 	bool		invis_			{false};
-	uint32		hp_				{4};
-	uint32		bombs_			{1};
+	
 	float32		speed_			{270.0f};
+	float32		rf_time_		{0.0f};
 	float32		anim_time_		{0.0f};
 	float32		invis_time_		{0.0f};
 	int32		state_			{STAND};
 	int32		new_state_		{STAND};
 
+	Sprite*		temp_boom_		{};
 	std::map<std::string, Rectangle*>	effects_ {};
-
-	void init_textures() override;
 };
 

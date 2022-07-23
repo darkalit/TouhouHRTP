@@ -82,7 +82,7 @@ void Shader::compile_from_file(const char* vertexFile, const char* fragmentFile,
 			geometryCode = gShaderStream.str();
 		}
 	}
-	catch (std::ifstream::failure e)
+	catch (std::ifstream::failure&)
 	{
 		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 	}

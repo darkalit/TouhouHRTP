@@ -1,81 +1,77 @@
 #include "Tile.h"
 
-Tile::Tile	(const uint32& screen_width, const uint32& screen_height, const uint8& state)
+Tile::Tile	(const uint32& screen_width, const uint32& screen_height, const uint8& hp, const uint8& skin)
 {
 	this->screen_width_	 = screen_width;
 	this->screen_height_ = screen_height;
-	this->state_ = state;
-	this->Tile::init_textures();
-	this->temp_ = this->sprites_[std::to_string(state)][0];
-}
-
-Tile::~Tile	()
-{
-	for (auto& kv : this->sprites_)
-		for (auto sprite : kv.second)
-			delete sprite;
+	this->initial_hp_ = hp;
+	this->skin_ = skin;
+	//this->state_ = state;
+	this->hp = hp;
+	this->temp_ = Resources::get_sprites("T" + std::to_string(this->skin_))[0];
 }
 
 auto Tile::flip			() -> bool
 {
+	if (this->play_s_f)
+		this->play_s_f = false;
 	return (this->flip_f_ = true);
 }
 
-auto Tile::get_state() -> State
+auto Tile::get_starting() -> bool
 {
-	return static_cast<State>(this->state_);
+	return this->start_f_;
 }
 
-auto Tile::get_state_change() -> bool
+auto Tile::get_hp_change() -> bool
 {
-	return this->state_change_;
+	return this->hp_change_;
 }
 
-void Tile::init_textures	()
+void Tile::reset()
 {
-	this->sprites_["0"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(96, 519, 128, 551), glm::ivec2(this->screen_width_, this->screen_height_))
-	};
-	this->sprites_["1"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 423, 129, 455), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 455, 129, 487), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 486, 129, 518), glm::ivec2(this->screen_width_, this->screen_height_))
-	};
-	this->sprites_["2"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 328, 129, 360), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 360, 129, 392), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 391, 129, 423), glm::ivec2(this->screen_width_, this->screen_height_))
-	};
-	this->sprites_["3"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 233, 129, 265), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 265, 129, 297), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 296, 129, 328), glm::ivec2(this->screen_width_, this->screen_height_))
-	};
+	this->hp = this->initial_hp_;
+	this->iter_ = Resources::get_sprites("T" + std::to_string(this->skin_)).size() - 1;
+	this->flip_f_ = false;
+	this->start_f_ = true;
+	this->hp_change_ = false;
+	this->temp_ = Resources::get_sprites("T" + std::to_string(this->skin_))[iter_];
 }
 
 void Tile::update		(const float32& delta_time)
 {
-	this->temp_state_ = this->state_;
-	this->state_change_ = false;
+	this->temp_hp_ = this->hp;
+	this->hp_change_ = false;	
+
 	if (this->flip_f_) 
 	{
-		this->state_ -= this->state_ > 0 && this->iter_ >= this->sprites_.at(std::to_string(this->state_)).size();
-		this->flip_f_ = (this->state_ > 0) && (this->iter_ < this->sprites_.at(std::to_string(this->state_)).size());
-		this->iter_ *= this->iter_ < this->sprites_.at(std::to_string(this->state_)).size();
+		this->hp -= this->hp > 0 && this->iter_ >= Resources::get_sprites("T" + std::to_string(this->skin_)).size();
+		this->flip_f_ = (this->hp > 0) && (this->iter_ < Resources::get_sprites("T" + std::to_string(this->skin_)).size());
+		this->iter_ *= this->iter_ < Resources::get_sprites("T" + std::to_string(this->skin_)).size();
 
-		if (this->temp_state_ != this->state_)
-			this->state_change_ = true;
+		if (this->temp_hp_ != this->hp)
+			this->hp_change_ = true;
 
-		this->temp_ = this->sprites_[std::to_string(this->state_)][iter_];
+		this->temp_ = Resources::get_sprites("T" + std::to_string(this->skin_))[iter_];
 		this->time_++;
 
-		this->time_ *= static_cast<float32>(this->time_ * delta_time <= 0.3f);
-		this->iter_ += static_cast<uint32>(this->time_) == 0;		
-	}	
+		this->time_ *= static_cast<float32>(this->time_ * delta_time <= 0.2f);
+		this->iter_ += static_cast<uint32>(this->time_) == 0;
+
+		if (this->hp == 0)
+			this->temp_ = Resources::get_sprites("T0")[0];
+	}
+	if (this->start_f_)
+	{
+		this->start_f_ = (this->hp > 0) && (this->iter_ > 0);
+		this->iter_ *= this->iter_ > 0;
+
+		this->temp_ = Resources::get_sprites("T" + std::to_string(this->skin_))[iter_];
+		this->time_++;
+
+		this->time_ *= static_cast<float32>(this->time_ * delta_time <= 0.2f);
+		this->iter_ -= static_cast<uint32>(this->time_) == 0;		
+	}
 }
 
 void Tile::draw()

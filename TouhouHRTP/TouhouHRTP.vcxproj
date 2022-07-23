@@ -22,6 +22,9 @@
     <ClInclude Include="..\vendor\stb_image.h" />
     <ClInclude Include="..\vendor\stb_image_write.h" />
     <ClInclude Include="..\vendor\stb_truetype.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="Objects\Bonus.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Objects\EnemyBullet.h" />
     <ClInclude Include="Level_manager.h" />
     <ClInclude Include="Objects\Ball_tp.h" />
@@ -49,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\vendor\glad\glad.c" />
+    <ClCompile Include="Objects\Bonus.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Objects\EnemyBullet.cpp" />
     <ClCompile Include="Level_manager.cpp" />
     <ClCompile Include="Objects\Ball_tp.cpp" />
@@ -76,6 +81,7 @@
     <None Include="Shaders\fFlash.glsl" />
     <None Include="Shaders\fScreen.glsl" />
     <None Include="Shaders\fSparkle.glsl" />
+    <None Include="Shaders\fSprite.glsl" />
     <None Include="Shaders\fText.glsl" />
     <None Include="Shaders\vFlash.glsl" />
     <None Include="Shaders\vScreen.glsl" />
@@ -189,7 +195,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;irrKlang.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -211,7 +217,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_mt.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_mt.lib;glew32.lib;irrKlang.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>

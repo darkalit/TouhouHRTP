@@ -4,7 +4,7 @@ class Rail : public Object
 {
 public:
 	Rail	(const uint32& screen_width, const uint32& screen_height);
-	~Rail	() override;
+	~Rail	() override {}
 
 	void set_rot	(const bool& vert);
 	auto get_rot	() -> bool;
@@ -13,6 +13,5 @@ public:
 
 private:
 	bool vertical_f_{false};
-	void init_textures() override;
 };
 

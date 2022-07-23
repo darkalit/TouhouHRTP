@@ -4,22 +4,14 @@ Ball::Ball(const uint32& screen_width, const uint32& screen_height)
 {
 	this->screen_width_	= screen_width;
 	this->screen_height_ = screen_height;
-	this->Ball::init_textures();
-	this->temp_ = this->sprites_["ball"][this->iter_];
-}
-
-Ball::~Ball()
-{
-	for (auto& kv : this->sprites_)
-		for (auto sprite : kv.second)
-			delete sprite;
+	this->temp_ = Resources::get_sprites("Ball")[0];
 }
 
 void Ball::fall(const float32& delta_time)
 {
-	this->iter_ %= this->sprites_["ball"].size();
+	this->iter_ %= Resources::get_sprites("Ball").size();
 
-	this->temp_ = this->sprites_["ball"][iter_];
+	this->temp_ = Resources::get_sprites("Ball")[this->iter_];
 	this->time_ += delta_time;
 
 	this->time_ *= static_cast<float32>(this->time_ < (1000.0f / glm::clamp(fabs(this->y_vel_ * this->x_vel_), 5000.0f, 20000.0f)));
@@ -43,6 +35,16 @@ void Ball::set_upper_bound(const float32& upper_bound)
 	this->upper_b_ = upper_bound;
 }
 
+void Ball::set_gravity(const float32& gravity)
+{
+	this->gravity_ = gravity;
+}
+
+void Ball::set_e_loss(const float32& e_loss)
+{
+	this->e_loss_ = e_loss;
+}
+
 void Ball::reflectx()
 {
 	this->x_vel_ = -this->x_vel_;
@@ -51,17 +53,6 @@ void Ball::reflectx()
 void Ball::reflecty()
 {
 	this->y_vel_ = -this->y_vel_ * this->e_loss_;
-}
-
-void Ball::init_textures	()
-{
-	this->sprites_["ball"] = std::vector<Sprite*>
-	{
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97,  97, 122, 122), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 123, 122, 148), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 149, 122, 174), glm::ivec2(this->screen_width_, this->screen_height_)),
-		new Sprite(Resources::get_texture("tiles"), glm::ivec4(97, 175, 122, 199), glm::ivec2(this->screen_width_, this->screen_height_)) 
-	};
 }
 
 void Ball::update(const float32& delta_time)
