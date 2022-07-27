@@ -8,8 +8,6 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#define USE_STD_FILESYSTEM
-
 #include <imgui/ImGuiFileDialog.h>
 
 enum class Object_types
@@ -56,6 +54,7 @@ void framebuffer_size_callback(GLFWwindow*, int32, int32);
 void window_size_callback(GLFWwindow*, int32, int32);
 void key_callback(GLFWwindow*, int32, int32, int32, int32);
 void process_input(GLFWwindow*);
+void new_file();
 void open_file();
 void save_file();
 void close_window(GLFWwindow* window);
@@ -83,11 +82,17 @@ Tile		tile_cursor	{};
 bool		hovered		{false};
 bool		focused		{false};
 bool		opened		{false};
+bool		changed		{false};
+bool		popup		{false};
+bool		new_popup	{false};
+bool		open_popup	{false};
+bool		exit_popup	{false};
 std::string lvl_name	{};
 int32		background	{};
 float32		r_window	{};
 glm::vec2	w_pos		{};
 std::array<Tile, 160> level {};
+
 
 auto main(int32 argc, char** argv) -> int32
 {
@@ -116,7 +121,6 @@ auto main(int32 argc, char** argv) -> int32
 	}
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	//glfwSetWindowSizeCallback(window, window_size_callback);
 
 	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
 	{
@@ -192,8 +196,6 @@ auto main(int32 argc, char** argv) -> int32
 	Resources::load_sprite("teleport", new Sprite(Resources::get_texture("tiles"), {99, 33, 131, 65}, {640, 400}));
 	Resources::load_sprite("delete", new Sprite(Resources::get_texture("tiles"), {65, 66, 97, 98}, {640, 400}));
 
-	//glfwSetWindowUserPointer(window, &level);
-
 	/*==============================*/
 
 	ImGuiWindowFlags menu_bar = 
@@ -247,23 +249,56 @@ auto main(int32 argc, char** argv) -> int32
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {10, 10});
 				if (ImGui::BeginMenu("File"))
 				{
+					if (ImGui::MenuItem("New", "Ctrl+N"))
+					{
+						if (changed)
+							popup = true;
+						else
+							new_file();
+						new_popup = true;
+						open_popup = false;
+						exit_popup = false;
+						opened = false;
+					}
 					if (ImGui::MenuItem("Open", "Ctrl+O"))
-						open_file();
+					{
+						if (changed)
+							popup = true;
+						else
+							open_file();
+						new_popup = false;
+						open_popup = true;
+						exit_popup = false;
+					}
 					if (ImGui::MenuItem("Save", "Ctrl+S"))
 					{
+						changed = false;
 						if (opened)
 							save_level(lvl_name.c_str());
 						else
 							save_file();
 					}
 					if (ImGui::MenuItem("Save as", "Ctrl+Shift+S"))
+					{
+						changed = false;
 						save_file();
+					}
 					if (ImGui::MenuItem("Close", "Ctrl+W"))
-						close_window(window);
+					{
+						if (changed)
+							popup = true;
+						else
+							close_window(window);
+						new_popup = false;
+						open_popup = false;
+						exit_popup = true;
+					}
 					ImGui::EndMenu();
 				}
 				ImGui::EndMenuBar();
 			}
+			ImGui::End();
+
 			if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
 			{
 				if (ImGuiFileDialog::Instance()->IsOk())
@@ -382,8 +417,39 @@ auto main(int32 argc, char** argv) -> int32
 					{0, 0}, {1, 1});
 				ImGui::End();
 			}
+			if (popup)
+			{
+				ImGui::OpenPopup("Unsaved changes!");
+				popup = false;
+			}
 
-			ImGui::End();
+			if (ImGui::BeginPopupModal("Unsaved changes!", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("You will lost all unsaved changes!\n Do you want to continue?");
+
+				if (ImGui::Button("Yes"))
+				{
+					if (new_popup)
+					{
+						new_file();
+					}
+					if (open_popup)
+					{
+						open_file();
+					}
+					if (exit_popup)
+					{
+						close_window(window);
+					}
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if (ImGui::Button("No, let me save everything"))
+					ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+
 			ImGui::PopStyleVar();
 			ImGui::PopStyleVar();
 			
@@ -436,6 +502,7 @@ void process_input(GLFWwindow* window)
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS
 		&& hovered && focused)
 	{
+		changed = true;
 	    level[tile_cursor.coord.y * 20 + tile_cursor.coord.x] = tile_cursor;
 		level[tile_cursor.coord.y * 20 + tile_cursor.coord.x].type = static_cast<Type>(EMPTY * (tile_cursor.type == DELETE) + tile_cursor.type * (tile_cursor.type != DELETE));
 	}
@@ -443,27 +510,67 @@ void process_input(GLFWwindow* window)
 
 void key_callback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods)
 {
+	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_N && action == GLFW_PRESS)
+	{
+		if (changed)
+			popup = true;
+		else
+			new_file();
+		new_popup = true;
+		open_popup = false;
+		exit_popup = false;
+	}
+
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_O && action == GLFW_PRESS)
-		open_file();
+	{
+		if (changed)
+			popup = true;
+		else
+			open_file();
+		new_popup = false;
+		open_popup = true;
+		exit_popup = false;
+	}
 
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_S && action == GLFW_PRESS)
+	{
 		if (opened)
 			save_level(lvl_name.c_str());
 		else
 			save_file();
+	}		
 
 	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT))
 		&& (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL))
 		&& key == GLFW_KEY_S && action == GLFW_PRESS)
-		save_file();
+	{
+		
+	}
 
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_W && action == GLFW_PRESS)
-		close_window(window);
+	{
+		if (changed)
+			popup = true;
+		else
+			close_window(window);
+		new_popup = false;
+		open_popup = false;
+		exit_popup = true;
+	}
+}
+
+void new_file()
+{
+	for (auto& tile : level)
+		tile.type = EMPTY;
+	new_popup = false;
 }
 
 void open_file()
 {
 	ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".lvl", ".");
+	open_popup = false;
 }
 
 void save_file()

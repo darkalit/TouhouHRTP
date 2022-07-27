@@ -3,7 +3,7 @@
 // uncomment and modify defines under for customize ImGuiFileDialog
 
 //this options need c++17
-//#define USE_STD_FILESYSTEM
+#define USE_STD_FILESYSTEM
 
 //#define MAX_FILE_DIALOG_NAME_BUFFER 1024
 //#define MAX_PATH_BUFFER_SIZE 1024
@@ -27,16 +27,16 @@
 
 
 //#define USE_EXPLORATION_BY_KEYS
-// this mapping by default is for GLFW but you can use another
+//// this mapping by default is for GLFW but you can use another
 //#include <GLFW/glfw3.h> 
-// Up key for explore to the top
+//// Up key for explore to the top
 //#define IGFD_KEY_UP ImGuiKey_UpArrow
-// Down key for explore to the bottom
+//// Down key for explore to the bottom
 //#define IGFD_KEY_DOWN ImGuiKey_DownArrow
-// Enter key for open directory
+//// Enter key for open directory
 //#define IGFD_KEY_ENTER ImGuiKey_Enter
-// BackSpace for comming back to the last directory
-//#define IGFD_KEY_BACKSPACE ImGuiKey_Backspace
+//// BackSpace for comming back to the last directory
+//#define IGFD_KEY_BACKSPACE ImGuiKey_Backspace	
 
 // by ex you can quit the dialog by pressing the key excape
 //#define USE_DIALOG_EXIT_WITH_KEY

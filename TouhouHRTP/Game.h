@@ -136,9 +136,9 @@ private:
 	bool	runtime_flag_	{true};
 
 	// keys map
-	std::unordered_map<uint16, std::array<bool, 2>> keys_ {};
-	
+	std::unordered_map<uint16, std::array<bool, 2>> keys_ {};	
 	std::function<uint32(uint32)> score_calc_ {};
+
 	void write_save			();
 	void read_save			();
 	void write_config		();

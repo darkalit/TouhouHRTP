@@ -561,7 +561,7 @@ void Game::update_gameplay()
 		}
 	}
 	if (temp_score % 400000 > this->score_ % 400000)
-		this->reimu_->hp++;
+		this->reimu_->hp = glm::clamp(this->reimu_->hp++, 0u, 7u);
 	
 }
 
