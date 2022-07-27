@@ -521,6 +521,7 @@ void key_callback(GLFWwindow* window, int32 key, int32 scancode, int32 action, i
 		new_popup = true;
 		open_popup = false;
 		exit_popup = false;
+		opened = false;
 	}
 
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_O && action == GLFW_PRESS)
@@ -532,10 +533,12 @@ void key_callback(GLFWwindow* window, int32 key, int32 scancode, int32 action, i
 		new_popup = false;
 		open_popup = true;
 		exit_popup = false;
+		opened = true;
 	}
 
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_S && action == GLFW_PRESS)
 	{
+		changed = false;
 		if (opened)
 			save_level(lvl_name.c_str());
 		else
@@ -546,7 +549,8 @@ void key_callback(GLFWwindow* window, int32 key, int32 scancode, int32 action, i
 		&& (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL))
 		&& key == GLFW_KEY_S && action == GLFW_PRESS)
 	{
-		
+		changed = false;
+		save_file();
 	}
 
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_W && action == GLFW_PRESS)
@@ -792,10 +796,10 @@ void show_tile_props()
 	tile_cursor.variation %= Resources::get_sprites("tile").size();
 	tile_cursor.stat = glm::clamp(tile_cursor.stat, 1u, 64u);
 	ImGui::Text("Tile hp");
-	ImGui::InputInt("##", reinterpret_cast<int32*>(&tile_cursor.stat));
+	ImGui::InputInt("##1", reinterpret_cast<int32*>(&tile_cursor.stat));
 	ImGui::Separator();
 	ImGui::Text("Tile variation");
-	ImGui::SliderInt("##", reinterpret_cast<int32*>(&tile_cursor.variation), 0, 2);
+	ImGui::SliderInt("##2", reinterpret_cast<int32*>(&tile_cursor.variation), 0, 2);
 }
 
 void show_rail_props()
@@ -803,10 +807,10 @@ void show_rail_props()
 	tile_cursor.type = RAIL;
 	tile_cursor.variation %= Resources::get_sprites("rail").size();
 	ImGui::Text("Rail displacement");
-	ImGui::SliderInt("##", reinterpret_cast<int32*>(&tile_cursor.stat), 0, 2);
+	ImGui::SliderInt("##1", reinterpret_cast<int32*>(&tile_cursor.stat), 0, 2);
 	ImGui::Separator();
 	ImGui::Text("Rail is vertical?");
-	ImGui::SliderInt("##", reinterpret_cast<int32*>(&tile_cursor.variation), 0, 1);
+	ImGui::Checkbox("##2", reinterpret_cast<bool*>(&tile_cursor.variation));
 }
 
 void show_turret_props()
