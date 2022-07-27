@@ -250,7 +250,12 @@ auto main(int32 argc, char** argv) -> int32
 					if (ImGui::MenuItem("Open", "Ctrl+O"))
 						open_file();
 					if (ImGui::MenuItem("Save", "Ctrl+S"))
-						save_level(lvl_name.c_str());
+					{
+						if (opened)
+							save_level(lvl_name.c_str());
+						else
+							save_file();
+					}
 					if (ImGui::MenuItem("Save as", "Ctrl+Shift+S"))
 						save_file();
 					if (ImGui::MenuItem("Close", "Ctrl+W"))
@@ -442,7 +447,10 @@ void key_callback(GLFWwindow* window, int32 key, int32 scancode, int32 action, i
 		open_file();
 
 	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_S && action == GLFW_PRESS)
-		save_level(lvl_name.c_str());
+		if (opened)
+			save_level(lvl_name.c_str());
+		else
+			save_file();
 
 	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT))
 		&& (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL))
@@ -461,7 +469,6 @@ void open_file()
 void save_file()
 {
 	ImGuiFileDialog::Instance()->OpenDialog("SaveFileDlgKey","Choose a File", ".lvl", ".", "", 1, nullptr, ImGuiFileDialogFlags_ConfirmOverwrite);
-
 }
 
 void close_window(GLFWwindow* window)
@@ -627,6 +634,7 @@ void save_level(const char*)
 			lvl_file << tile.coord.x << ", " << tile.coord.y << ", " << tile.stat << "\n";
 
 	lvl_file.close();
+	opened = true;
 }
 
 
