@@ -269,6 +269,7 @@ auto main(int32 argc, char** argv) -> int32
 						new_popup = false;
 						open_popup = true;
 						exit_popup = false;
+						opened = true;
 					}
 					if (ImGui::MenuItem("Save", "Ctrl+S"))
 					{
@@ -741,7 +742,6 @@ void save_level(const char*)
 			lvl_file << tile.coord.x << ", " << tile.coord.y << ", " << tile.stat << "\n";
 
 	lvl_file.close();
-	opened = true;
 }
 
 

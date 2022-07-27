@@ -62,6 +62,15 @@ Game::~Game()
 	glfwTerminate();
 }
 
+void Game::smooth_sound_stop()
+{
+	this->se_->setSoundVolume(0.0f);
+	this->se_->stopAllSounds();
+	this->se_->setSoundVolume(std::stof(this->configs_.at("volume")));
+	for (auto sound : this->sfx_)
+		sound->setDefaultVolume(std::clamp(std::stof(this->configs_.at("volume")) - 0.04f, 0.05f, 1.0f));
+}
+
 void Game::write_save()
 {
 	std::ofstream ofile("save.dat", std::ios::binary);
@@ -899,6 +908,8 @@ void Game::init_objects()
 			filename.extension().string() == ".lvl")
 			this->lvls_list_.push_back(filename.string());
 
+	std::sort(this->lvls_list_.begin(), this->lvls_list_.end(), [](const std::string& a, const std::string& b){ return a.back() < b.back() || a.size() < b.size(); });
+
 	this->reimu_	= new Player(this->scr_width_, this->scr_height_);
 	this->reimu_->set_speed(std::stof(this->configs_.at("player_speed")));
 
@@ -906,9 +917,6 @@ void Game::init_objects()
 	this->ball_->set_gravity(std::stof(this->configs_.at("ball_gravity")));
 	this->ball_->set_e_loss(std::stof(this->configs_.at("energy_loss")));
 	this->ball_->set_upper_bound(this->upper_bound_);
-	
-	//this->flash_ = new Rectangle(glm::ivec2(60, 60), glm::ivec2(this->scr_width_, this->scr_height_));
-	//this->flash_->set_pos(static_cast<float32>(this->scr_width_) / 2.0f, static_cast<float32>(this->scr_height_) / 2.0f);
 }
 
 void Game::framebuffer_size_callback(GLFWwindow* window, int32 width, int32 height)
@@ -1076,7 +1084,7 @@ void Game::process_input()
 
 				case 1:
 					this->state_ = Menu::MAIN_MENU;
-					this->se_->stopAllSounds();
+					this->smooth_sound_stop();
 					this->se_->play2D(this->bgm_[0], true);
 					this->menu_->option = 0;
 					break;
@@ -1112,7 +1120,7 @@ void Game::process_input()
 				&& this->keys_.at(GLFW_KEY_Z)[0] == GLFW_RELEASE)
 			{
 				this->state_ = Menu::MAIN_MENU;
-				this->se_->stopAllSounds();
+				this->smooth_sound_stop();
 				this->se_->play2D(this->bgm_[0], true);
 			}
 			this->keys_.at(GLFW_KEY_Z)[0] = this->keys_.at(GLFW_KEY_Z)[1];
@@ -1140,7 +1148,7 @@ void Game::process_input()
 					this->write_save();
 					if (this->bg_temp_ != this->lvl_objs_.bg_num)
 					{
-						this->se_->stopAllSounds();
+						this->smooth_sound_stop();
 						this->se_->play2D(this->bgm_[this->lvl_objs_.bg_num % 6 + 1]);
 						this->bg_temp_ = this->lvl_objs_.bg_num;
 					}
@@ -1148,7 +1156,7 @@ void Game::process_input()
 				else
 				{
 					this->state_ = Menu::ENDING;
-					this->se_->stopAllSounds();
+					this->smooth_sound_stop();
 					this->se_->play2D(this->bgm_[7], true);
 				}
 			}
@@ -1161,7 +1169,7 @@ void Game::process_input()
 				&& this->keys_.at(GLFW_KEY_Z)[0] == GLFW_RELEASE)
 			{
 				this->state_ = Menu::MAIN_MENU;
-				this->se_->stopAllSounds();
+				this->smooth_sound_stop();
 				this->se_->play2D(this->bgm_[0], true);
 			}
 			this->keys_.at(GLFW_KEY_Z)[0] = this->keys_.at(GLFW_KEY_Z)[1];
@@ -1179,7 +1187,7 @@ void Game::process_input()
 					this->state_ = Menu::GAMEPLAY;
 					this->stage_ = 1;
 					Level_manager::load(this->lvl_objs_, (this->configs_.at("levels_dir") + this->lvls_list_[this->stage_ - 1]).c_str());
-					this->se_->stopAllSounds();
+					this->smooth_sound_stop();
 					this->se_->play2D(this->bgm_[this->lvl_objs_.bg_num % 6 + 1], true);
 					try
 					{
@@ -1202,7 +1210,7 @@ void Game::process_input()
 					this->read_save();
 					this->tile_val_ = (this->stage_ / 4) * (this->stage_ % 4 > 0) + 100;
 					this->bg_temp_ = this->lvl_objs_.bg_num;
-					this->se_->stopAllSounds();
+					this->smooth_sound_stop();
 					this->se_->play2D(this->bgm_[this->lvl_objs_.bg_num % 6 + 1], true);
 					this->ball_upd_f_ = false;
 					this->set_difficulty();
