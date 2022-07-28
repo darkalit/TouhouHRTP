@@ -1148,7 +1148,10 @@ void Game::process_input()
 				this->hi_score_ = (this->score_ >= this->hi_score_) * this->score_
 								+ (this->score_ < this->hi_score_) * this->hi_score_;
 				if (temp_score / 400000 < this->score_ / 400000)
+				{
 					this->reimu_->hp += (this->score_ / 400000) - (temp_score / 400000);
+					this->reimu_->hp = glm::clamp(this->reimu_->hp, 0u, 7u);
+				}
 
 				if (this->stage_ <= this->lvls_list_.size())
 				{
@@ -1159,7 +1162,7 @@ void Game::process_input()
 					if (this->bg_temp_ != this->lvl_objs_.bg_num)
 					{
 						this->smooth_sound_stop();
-						this->se_->play2D(this->bgm_[this->lvl_objs_.bg_num % 6 + 1]);
+						this->se_->play2D(this->bgm_[this->lvl_objs_.bg_num % 6 + 1], true);
 						this->bg_temp_ = this->lvl_objs_.bg_num;
 					}
 				}			
