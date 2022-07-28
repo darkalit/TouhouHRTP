@@ -267,7 +267,7 @@ void Game::update_enemies()
 					this->enemy_bullets_.end(), 
 					bullet), this->enemy_bullets_.end());
 			delete bullet;
-			continue;
+			break;
 		}
 
 		if (this->ball_->check_intersect_circle_circle(*bullet))
@@ -277,17 +277,17 @@ void Game::update_enemies()
 					this->enemy_bullets_.end(), 
 					bullet), this->enemy_bullets_.end());
 			delete bullet;
-			continue;
-		}
+			break;
+		}		
 
 		if (bullet->check_intersect(*this->reimu_)
 			&& this->reimu_->get_state() == Player::State::ATTACK1)
 		{
 			const glm::vec2 dir = glm::normalize(bullet->get_pos() - this->reimu_->get_pos());
 			bullet->set_direction(dir);
-			bullet->move(dir.x * 2.0f, dir.y * 2.0f);
+			bullet->move(dir.x * 3.0f, dir.y * 3.0f);
 			continue;
-		}		
+		}	
 
 		for (auto p_bullet : this->player_bullets_)
 			if (bullet->check_intersect_circle_rect(*p_bullet))
@@ -363,7 +363,10 @@ void Game::update_ball()
 			if ((rail->get_pos().y - rail->get_size().y / 2.4f >= this->ball_->get_pos().y
 					|| rail->get_pos().y + rail->get_size().y / 2.4f <= this->ball_->get_pos().y)
 					&& !rail->get_rot())
-				this->ball_->set_vel(this->ball_->get_vel().x, 200.0f * static_cast<float32>(signum(pushDirB.y)));
+			{				
+				this->ball_->reflecty();
+				this->ball_->set_pos(this->ball_->get_pos().x, this->ball_->get_pos().y + signum(pushDirB.y) * 3.0f);
+			}
 
 			if (rail->get_pos().x - rail->get_size().x / 2.1f < this->ball_->get_pos().x
 				&& rail->get_pos().x + rail->get_size().x / 2.1f > this->ball_->get_pos().x
@@ -427,6 +430,7 @@ void Game::update_player	()
 	for (auto bullet : this->enemy_bullets_)
 		if (bullet->check_intersect(*this->reimu_)
 			&& this->reimu_->get_state() != Player::State::DEAD
+			&& this->reimu_->get_state() != Player::State::ATTACK1
 			&& !this->reimu_->get_invis())
 		{
 			this->se_->play2D(this->sfx_[3]);
@@ -569,8 +573,11 @@ void Game::update_gameplay()
 			this->update_ball();
 		}
 	}
-	if (temp_score % 400000 > this->score_ % 400000)
-		this->reimu_->hp = glm::clamp(this->reimu_->hp++, 0u, 7u);
+	if (temp_score / 400000 < this->score_ / 400000)
+	{
+		this->reimu_->hp += (this->score_ / 400000) - (temp_score / 400000);
+		this->reimu_->hp = glm::clamp(this->reimu_->hp, 0u, 7u);
+	}
 	
 }
 
@@ -693,8 +700,7 @@ void Game::display()
 
 		glfwPollEvents();
 		glfwSwapBuffers(this->window_);
-	}
-	
+	}	
 }
 
 void Game::init_window()
@@ -1141,8 +1147,9 @@ void Game::process_input()
 				this->score_ += this->level_score_;
 				this->hi_score_ = (this->score_ >= this->hi_score_) * this->score_
 								+ (this->score_ < this->hi_score_) * this->hi_score_;
-				if (temp_score % 400000 > this->score_ % 400000)
-					this->reimu_->hp = glm::clamp(this->reimu_->hp++, 0u, 7u);
+				if (temp_score / 400000 < this->score_ / 400000)
+					this->reimu_->hp += (this->score_ / 400000) - (temp_score / 400000);
+
 				if (this->stage_ <= this->lvls_list_.size())
 				{
 					Level_manager::load(this->lvl_objs_, (this->configs_.at("levels_dir") + this->lvls_list_[this->stage_ - 1]).c_str());

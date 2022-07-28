@@ -145,8 +145,7 @@ void Player::bomb(const float32& delta_time)
 		this->anim_time_ = 0.0f;
 		this->new_state_ = STAND;
 		this->bombs--;
-		if (invis_time_ <= 0.0f)
-			this->invis_ = false;
+		invis_time_ = 0.5f;
 		Resources::get_shader("screen")->use();
 		Resources::get_shader("screen")->setBool("shake", false);
 	}
