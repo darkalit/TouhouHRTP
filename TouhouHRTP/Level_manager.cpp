@@ -75,7 +75,7 @@ void Level_manager::load(Level_objects& arg, const char* file)
 			arg.rails.back()->set_pos(
 				arg.tile_size * (static_cast<float32>(tile_params[0]) + 0.5f) 
 				+ static_cast<float32>(arg.rails.back()->get_rot()) * 0.5f
-				* static_cast<float32>((tile_params[2] == 2) - (tile_params[2] == 0))
+				* static_cast<float32>((tile_params[2] == 0) - (tile_params[2] == 2))
 				* (arg.rails.back()->get_size().x - arg.tile_size),
 				static_cast<float32>(arg.scr_height) -
 				arg.tile_size * (static_cast<float32>(tile_params[1]) + 2.5f)

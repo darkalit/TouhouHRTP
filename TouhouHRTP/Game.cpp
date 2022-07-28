@@ -1137,9 +1137,12 @@ void Game::process_input()
 				if (temp_stage % 5 + 1 >= this->stage_ % 5)
 					this->tile_val_ += 100;
 
+				const auto temp_score = this->score_;				
 				this->score_ += this->level_score_;
 				this->hi_score_ = (this->score_ >= this->hi_score_) * this->score_
 								+ (this->score_ < this->hi_score_) * this->hi_score_;
+				if (temp_score % 400000 > this->score_ % 400000)
+					this->reimu_->hp = glm::clamp(this->reimu_->hp++, 0u, 7u);
 				if (this->stage_ <= this->lvls_list_.size())
 				{
 					Level_manager::load(this->lvl_objs_, (this->configs_.at("levels_dir") + this->lvls_list_[this->stage_ - 1]).c_str());
