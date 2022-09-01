@@ -1,6 +1,8 @@
 # Touhou Highly Responsive to Prayers "Clone"
-[![CodeFactor](https://www.codefactor.io/repository/github/darkalit/touhouhrtp/badge)](https://www.codefactor.io/repository/github/darkalit/touhouhrtp)<p>
 Just a project used for learning OpenGL and some gamedev pecularities.
+### Gameplay and level builder
+* <a href="https://youtu.be/46xeYvpFXsM">Touhou HRTP "clone" gameplay demonstration</a><p>
+* <a href="https://youtu.be/X8zDS3tNTiw">Level Builder for my Touhou HRTP "clone" game</a><p>
 ### Controls
 Z - Shoot;
 X - Attack, Slide, Kicks and etc.
